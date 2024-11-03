@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
 {% endblock style %}
     {% block content %}
+    <pre id="choices" style="display: none;">{{ unidades_choices|safe }}</pre>
 
 
     <div class="container">
         <div class="title-container">
             <h1>Insumos</h1>
-            <button id="register-insumo-btn">Cargar Insumo</button>
+            <button id="register-insumo-btn" onclick="modalCargarInsumo()">Cargar Insumo</button>
         </div>
         <table id="insumo-table">
             <thead>
@@ -48,8 +49,10 @@
                 <label for="cantidad">Cantidad:</label>
                 <input type="text" id="cantidad" required>
 
-                <label for="medida">Medida:</label>
-                <input type="text" id="medida" required>
+                <label for="medida">Unidad de Medida: </label>
+                <select name="medida" id="medida">
+                    <option value="">----</option>
+                </select>
 
                 <label for="punto_pedido">Punto de Pedido:</label>
                 <input type="text" id="punto_pedido" required>
@@ -91,10 +94,7 @@
         </div>
     </div>
 
-
-    <script src="/scripts/insumo.js"></script>
-    <script src="/scripts/loadScrip.js"></script>
-
+    <script src="{% static 'scripts/insumos.js' %}"></script>
     {% endblock content %}
 
     
