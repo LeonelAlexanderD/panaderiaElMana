@@ -1,0 +1,73 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Proveedores - Panaderia El Maná
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="container">
+    <div class="title-container">
+        <h1>Proveedores</h1>
+        <button id="open-register-modal-btn" onclick="mostrarModalRegistro()">Registrar Proveedor</button>
+    </div>
+    <table id="proveedor-table">
+        <thead>
+            <tr>
+                <th>Razon Social</th>
+                <th>CUIT</th>
+                <th>Contacto</th>
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if proveedores %}
+            {% for proveedor in proveedores %}
+            <tr>
+                <td>{{ proveedor.razon_social }} </td>
+                <td>{{ proveedor.cuit }} </td>
+                <td>{{ proveedor.contacto }} </td>
+                <td>
+                    <a type="button" href="{% url 'proveedores:detalle_proveedor' proveedor.id %}">VER</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">No hay proveedores disponibles</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- registro -->
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Registro Proveedor</h2>
+        <form method="post" id="register-proveedor-form" action="{% url 'proveedores:registrar_proveedor' %}">
+            {% csrf_token %}
+            <label for="razonsocial">Razon Social:</label>
+            <input type="text" name="razon_social" id="razonsocial" required>
+
+            <label for="cuit">CUIT:</label>
+            <input type="number" name="cuit" id="cuit" required>
+
+            <label for="contacto">Contacto:</label>
+            <input type="number" name="contacto" id="contacto" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+
+
+<script src="{% static 'scripts/proveedor.js' %}"></script>
+{% endblock content %}

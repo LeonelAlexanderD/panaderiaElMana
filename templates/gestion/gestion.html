@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+    Gestion - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'styles/gestion.css' %}">
+{% endblock style %}
+    {% block content %}
+
+
+
+    
+    <div class="container">
+        <h1>Gestion</h1>
+        <div class="card-grid">            
+            
+            <a href="{% url 'proveedores:listar_proveedores' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Proveedores</h2>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'productos:listar_productos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Productos</h2>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'productos:listar_productos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Insumos</h2>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'productos:listar_productos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Clientes Mayoristas</h2>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'productos:listar_productos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Ventas</h2>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'productos:listar_productos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Pedidos</h2>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{% url 'productos:listar_productos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Recepciones</h2>
+                    </div>
+                </div>
+            </a>
+            
+        </div>
+    </div>
+
+
+    {% endblock content %}
+    

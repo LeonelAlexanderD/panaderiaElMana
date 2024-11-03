@@ -1,0 +1,85 @@
+/* :root {
+    --primary-color: #f8e3dd;
+    --secondary-color: #8b4513;
+    --accent-color: #ff9999;
+    --text-color: #4a4a4a;
+    --background-color: #fff9f5;
+} */
+
+:root {
+    --primary-color: #f7d4a1; 
+    --secondary-color: #b97a57;
+    --accent-color: #ffb347; 
+    --text-color: #5c5c5c; 
+    --background-color: #faf0e6; 
+}
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: auto 1fr auto;
+    background-image: url('/static/img/mana2.jpeg');
+    background-repeat: repeat;
+    background-size: auto; 
+    background-position: top left;
+
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--secondary-color);
+}
+
+.index {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.principal{
+    /* height: 60%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.index h1{
+    font-weight: bold;
+}
+
+.index p{
+    text-align: center;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.detalle-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    margin: 20px;
+
+}
+
+

@@ -1,0 +1,75 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Proveedores Detalle - Panaderia El Maná
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/detalles.css' %}">
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+
+{% endblock style %}
+
+{% block content %}
+<div class="container-details ">
+    <section class="section-details">
+        <div class="tittle">
+            <h1>Detalle de Proveedor</h1>
+        </div>
+        <div class="info-box">
+            <div class="info-row">
+                <h3 class="info-label">Nombre:</h3>
+                <h3 class="info-value">{{ proveedor.razon_social }}</h3>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Cuit:</h4>
+                <h4 class="info-value">{{ proveedor.cuit }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Contacto:</h4>
+                <h4 class="info-value">{{ proveedor.contacto }}</h4>
+            </div>
+            <div class="info-row">
+                <button onclick="mostrarModalModificar()">Modificar</button>  
+                <button onclick="mostrarModalEliminar()">Eliminar</button>                
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="modify-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Registro Proveedor</h2>
+        <form method="post" id="register-proveedor-form" action="{% url 'proveedores:editar_proveedor' proveedor.id %}">
+            {% csrf_token %}
+            <label for="razonsocial">Razon Social:</label>
+            <input type="text" name="razon_social" id="razonsocial" value="{{ proveedor.razon_social }}" required>
+
+            <label for="cuit">CUIT: </label>
+            <input type="number" name="cuit" id="cuit" value="{{ proveedor.cuit }}" required>
+
+            <label for="contacto">Contacto:  </label>
+            <input type="number" name="contacto" id="contacto" value="{{ proveedor.contacto }}" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+<div id="delete-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Registro Proveedor</h2>
+        <form method="post" id="delete-proveedor-form" action="{% url 'proveedores:eliminar_proveedor' proveedor.id %}">
+            {% csrf_token %}
+            <h2>Estas seguro de eliminar a {{ proveedor.razon_social}} ? </h2>            
+            <button type="submit">Aceptar</button>
+            <button type="button" class="close">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'scripts/proveedor.js' %}"></script>
+{% endblock content %}

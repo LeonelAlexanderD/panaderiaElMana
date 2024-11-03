@@ -1,0 +1,100 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Nueva Venta - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/ventas.css' %}">
+{% endblock style %}
+{% block content %}
+
+
+
+<div class="container">
+    {% for categoria, subcategorias in productos.items %}
+    <section class="category">
+        <h2 class="category-title">{{ categoria }}</h2>
+        {% for subcategoria, items in subcategorias %}
+        <div class="subcategory">
+            <h3 class="subcategory-title">{{ subcategoria }}</h3>
+            <div class="products">
+                {% for producto in items %}
+                <div class="product-card">
+                    <img src="{{ product.imagen.url }}" alt="{{ product.nombre }}" class="product-image">
+                    <div class="product-info">
+                        <h4 class="product-name"> {{ producto.nombre }} </h4>
+                        <p class="product-descripcion"> {{ producto.descripcion }} </p>
+                        <h3 class="product-price">Precio: {{ producto.precio }} {{producto.medida}} Stock: {{
+                            producto.stock }}</h3>
+                        <button class="add-to-cart" data-id="{{ producto.id }}">Agregar</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    {% endfor %}
+</div>
+
+<button id="cart-toggle">Carrito</button>
+
+<div id="cart">
+    <h2>Shopping</h2>
+    <button id="hide-cart">Ocultar</button>
+    <div id="cart-items"></div>
+    <div id="cart-total">Total: $ <span id="cart-total-value">0.00</span> </div>
+    <button id="payment-button">Generar Comprobante</button>
+</div>
+
+<div id="payment-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Detalles de Compra</h2>
+        <form id="payment-form">
+            <label for="sale-date">Fecha de Venta:</label>
+            <input type="date" id="sale-date"> value="{{ comprobante.fecha_de_venta }}" </div>
+
+            <label for="sale-type">Tipo de venta:</label>
+            <select id="sale-type" required>
+                <option value="contado">Contado</option>
+                <option value="credito">Credito</option>
+            </select>
+
+            <label for="payment-method">Forma de Pago:</label>
+            <select id="payment-method" required>
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+                <option value="transferencia">Transferencia</option>
+            </select>
+
+            <label for="receipt-type">Tipo de Comprobante:</label>
+            <select id="receipt-type" required>
+                <option value="invoice">Factura</option>
+                <option value="ticket">Ticket</option>
+            </select>
+
+            <label for="receipt-number">Numero de Comprobante:</label>
+            <input type="text" id="receipt-number" value="{{ comprobante.id }}" readonly>
+
+            <label for="additional-observations">Observacion Adicional:</label>
+            <textarea id="additional-observations"></textarea>
+
+            <h3>Order Summary</h3>
+            <div id="resumen-pedido"></div>
+            <div id="total-pedido"></div>
+
+            <button type="submit">Guardar</button>
+            <button type="button" id="cancel-payment">Cancelar</button>
+        </form>
+    </div>
+</div>
+<script src="{% static 'scripts/carrito.js' %}"></script>
+
+{% endblock content %}
+<!-- <footer>
+        {% include 'header-footer/footer.html' %}
+    </footer>
+</body>
+</html> -->

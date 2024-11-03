@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+    Historial Venta - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+    {% block content %}
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas - Panaderia El Maná</title>
+    <link rel="stylesheet" href="{% static 'styles/root.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+</head>
+<body>
+    <header id="header-container">
+        {% include 'header-footer/header.html' %}
+    </header> -->
+
+    <div class="container">
+        <div class="title-container">
+            <h1>Listado de Ventas</h1>
+        </div>
+        <table id="ventas-table">
+            <thead>
+                <tr>
+                    <th>Nro. Comprobante</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- filas -->
+            </tbody>
+        </table>
+    </div>
+
+
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Detalles </h2>
+            <form id="details-form">
+                <input type="hidden" id="id">
+                <label for="comprobante">Nro. Comprobante:</label>
+                <input type="text" id="comprobante" required>
+
+                <label for="fecha-venta">Fecha de Venta:</label>
+                <input type="text" id="fecha-venta" required>
+
+                <label for="tipo-venta">Tipo de Venta:</label>
+                <input type="text" id="tipo-venta" required>
+
+                <label for="forma-pago">Forma de Pago:</label>
+                <input type="text" id="forma-pago" required>
+
+                <label for="items">Items:</label>
+                <input type="text" id="items" required>
+
+                <label for="total">Total:</label>
+                <input type="text" id="total" required>
+
+                <label for="observacion">Observacion:</label>
+                <input type="text" id="observacion" required>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="/scripts/lista_ventas.js"></script>
+    <script src="/scripts/loadScrip.js"></script>
+
+    {% endblock content %}
+    <!-- <footer>
+        {% include 'header-footer/footer.html' %}
+    </footer>
+</body>
+</html> -->
