@@ -1,9 +1,10 @@
 from decimal import Decimal
+import json
+from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
-from django.shortcuts import get_object_or_404
-
-from productos.forms import ProductoForm
+from django.shortcuts import redirect, render, get_object_or_404
+# from django.core.serializers.json import DjangoJSONEncoder
+from productos.forms import InsumoForm, ProductoForm
 from productos.models import Insumo, Producto
 
 # Create your views here.
@@ -106,6 +107,40 @@ def cambiar_precio(request, pk):
             return JsonResponse({'error': 'Precio invalido'}, status=400)
     return JsonResponse({'error':'metodo no permitido'}, status=405)
 
+
+
+## INSUMOS
+#
 def listar_insumos(request):
     insumos = Insumo.objects.all()
-    return render(request, 'insumos/lista_insumos.html', {'insumos': insumos})
+    unidades_choices = dict(Insumo.UNIDADES)
+    # unidades_choices_json = json.dumps(unidades_choices, cls=DjangoJSONEncoder)
+    context = {
+        'insumos': insumos,
+        'unidades_choices': json.dumps(unidades_choices),
+        # 'unidades_choices_json': unidades_choices_json,
+    }
+    return render(request, 'insumos/lista_insumos.html', context)
+
+
+# def cargar_insumo(request):
+#     nuevo_insumo = None
+#     if request.method == 'POST':
+#         insumo_form = InsumoForm(request.POST)
+#         if insumo_form.is_valid():
+#             nuevo_insumo = insumo_form.save()
+#             messages.success(
+#                 request, 'Se ha guardado el insumo'
+#             )
+#             return redirect('productos:listar_insumos')
+#     else:
+#         insumo_form = InsumoForm()
+#     return render(request, 'productos/listar_insumos.html',{'form':insumo_form})
+
+def cargar_insumo(request):
+    if request.method == "POST":
+        form = InsumoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('productos:listar_insumos')
+        return JsonResponse({'success': False, 'errors': form.errors})

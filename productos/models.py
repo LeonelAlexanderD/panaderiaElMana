@@ -2,11 +2,16 @@ from django.db import models
 
 # Create your models here.
 class Insumo(models.Model):
+    UNIDADES = [
+        ('unidad', 'u.'),
+        ('gramo', 'gr.'),
+        ('kilogramo', 'kg.')
+    ]
     marca = models.CharField(max_length=30)
     tipo = models.CharField(max_length=30)
     nombre = models.CharField(max_length=30)
     cantidad = models.DecimalField(max_digits=6, decimal_places=2)
-    medida = models.CharField(max_length=30)
+    medida = models.CharField(max_length=30, choices=UNIDADES)
     punto_de_pedido = models.DecimalField(max_digits=6, decimal_places=2)
     
 
