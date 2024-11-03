@@ -7,6 +7,8 @@ Productos - Panaderia El Maná
 <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
 {% endblock style %}
 {% block content %}
+<pre id="medidas_choices" style="display: none;">{{ medidas_choices|safe }}</pre>
+<pre id="categorias_choices" style="display: none;">{{ categorias_choices|safe }}</pre>
 
 
 <div class="container">
@@ -73,11 +75,7 @@ Productos - Panaderia El Maná
 
             <label for="unidad_medida">Unidad de Medida:</label>
             <select name="unidad_medida" id="unidad_medida" required>
-                <option value="">----</option>
-                <option value="unidad">unidad</option>
-                <option value="gramo">gramo</option>
-                <option value="kilogramo">kilogramo</option>
-                
+                <option value="">----</option>                
             </select>
             
 
@@ -87,11 +85,9 @@ Productos - Panaderia El Maná
             <label for="stock">Stock:</label>
             <input type="number" name="stock" id="stock" required>
 
-            <label for="categoria">Categoria:</label>
-            <select name="categoria" id="categoria" required>
+            <label for="categoria_select">Categoria:</label>
+            <select name="categoria_select" id="categoria_select" required>
                 <option value="">----</option>
-                <option value="Panaderia">Panaderia</option>
-                <option value="Pasteleria">Pasteleria</option>
             </select>
            
 

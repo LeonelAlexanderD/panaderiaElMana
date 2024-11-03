@@ -95,3 +95,35 @@ function closeModals() {
 }
 
 closeModals();
+
+document.addEventListener('DOMContentLoaded', function () {
+    const jsonTextmedidas = document.getElementById('medidas_choices').textContent;
+    const unidadesChoices = JSON.parse(jsonTextmedidas);
+    const selectMedida = document.getElementById('unidad_medida');
+    
+    selectMedida.innerHTML = '';
+
+    for (let key in unidadesChoices) {
+        if (unidadesChoices.hasOwnProperty(key)) {
+            let option = document.createElement('option');
+            option.value = key;
+            option.textContent = unidadesChoices[key];
+            selectMedida.appendChild(option);
+        }
+    }
+
+
+    const jsonTextCategoria = document.getElementById('categorias_choices').textContent;
+    const categoriasChoices = JSON.parse(jsonTextCategoria);
+    const selectCategoria = document.getElementById('categoria_select');
+    selectCategoria.innerHTML = '';
+
+    for (let key in categoriasChoices) {
+        if(categoriasChoices.hasOwnProperty(key)){
+            let option = document.createElement('option');
+            option.value = key;
+            option.textContent = categoriasChoices[key];
+            selectCategoria.appendChild(option);
+        }
+    }
+});

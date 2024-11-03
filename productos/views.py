@@ -20,37 +20,37 @@ def pagina_gestion(request):
 ## productos
 def listar_productos(request):
     productos = Producto.objects.all()
-    return render(request, 'productos/lista_productos.html', {'productos': productos})
-
-
-
-# def registrar_producto(request):
-#     if request.method == "POST":
-#         form = ProductoForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('productos:listar_productos')
-#         return JsonResponse({'success': False, 'errors': form.errors})
+    medidas = dict(Producto.UNIDADES)
+    categorias = dict(Producto.CATEGORIAS)
     
+    context = {
+        'productos': productos,
+        'medidas_choices': json.dumps(medidas),
+        'categorias_choices': json.dumps(categorias),
+    }
+    return render(request, 'productos/lista_productos.html', context)
+
+
+
 def registrar_producto(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('productos:listar_productos')
-    else:
-        form = ProductoForm()
-
-    context = {
-        'form': form,
-        'categoria_choices': Producto.CATEGORIAS,
-        'unidad_medida_choices': Producto.UNIDADES,
-    }
-    return render(request, 'productos/registro_producto.html', context)
-
+        return JsonResponse({'success': False, 'errors': form.errors})
+    
+    
 def detalle_producto(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
-    return render(request,'productos/detalle_producto.html', {'producto':producto})
+    medidas = dict(Producto.UNIDADES)
+    categorias = dict(Producto.CATEGORIAS)
+    context = {
+        'producto': producto,
+        'medidas_choices': json.dumps(medidas),
+        'categorias_choices': json.dumps(categorias),
+    }
+    return render(request,'productos/detalle_producto.html', context)
 
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, pk=pk)

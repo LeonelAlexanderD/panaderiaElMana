@@ -13,6 +13,10 @@ Proveedores Detalle - Panaderia El Maná
 {% endblock style %}
 
 {% block content %}
+<pre id="medidas_choices" style="display: none;">{{ medidas_choices|safe }}</pre>
+<pre id="categorias_choices" style="display: none;">{{ categorias_choices|safe }}</pre>
+
+
 <div class="container-details ">
     <div class="div-top">
         <div class="boton-volver">
@@ -103,10 +107,7 @@ Proveedores Detalle - Panaderia El Maná
             <select name="unidad_medida" id="unidad_medida"
                 value="{{ form.unidad_medida.value|default_if_none:producto.unidad_medida }}">
                 <option value="">----</option>
-                <option value="unidad" {% if producto.unidad_medida=="unidad" %}selected{% endif %}>unidad</option>
-                <option value="gramo" {% if producto.unidad_medida=="gramo" %}selected{% endif %}>gramo</option>
-                <option value="kilogramo" {% if producto.unidad_medida=="kilogramo" %}selected{% endif %}>kilogramo
-                </option>
+                
             </select>
 
             <label for="descripcion">Descripcion: {{ producto.descripcion }} </label>
@@ -117,16 +118,9 @@ Proveedores Detalle - Panaderia El Maná
             <input type="number" name="stock" id="stock" value="{{ form.stock.value|default_if_none:producto.stock }}">
 
             <label for="categoria">Categoria: {{ producto.categoria }} </label>
-            <select name="categoria" id="categoria">
-                <!-- <option value="">----</option>
-                <option value="Panaderia" {% if producto.categoria=="Panaderia" %}selected{% endif %}>Panaderia</option>
-                <option value="Pasteleria" {% if producto.categoria=="Pasteleria" %}selected{% endif %}>Pasteleria
-                </option> -->
-                {% for value, display in producto.CATEGORIA_CHOICES %}
-                <option value="{{ value }}" {% if producto.categoria==value %}selected{% endif %}>
-                    {{ display }}
-                </option>
-                {% endfor %}
+            <select name="categoria" id="categoria_select">
+                <option value="">----</option>
+                
             </select>
 
             <label for="tipo">Tipo: {{ producto.tipo }} </label>
