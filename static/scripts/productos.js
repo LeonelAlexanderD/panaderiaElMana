@@ -1,26 +1,20 @@
 // vista previa de la imagen que cargo en el form
-document.addEventListener('DOMContentLoaded', function() {
-    const imagenInput = document.getElementById('imagen');
+document.getElementById('imagen').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const imagePreview = document.getElementById('image-preview');
     
-    if (imagenInput) {
-        imagenInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const imagePreview = document.getElementById('image-preview');
-            
-            if (file) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                }
-                
-                reader.readAsDataURL(file);
-            } else {
-                imagePreview.src = '#';
-                imagePreview.style.display = 'none';
-            }
-        });
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(file);
+    } else {
+        imagePreview.src = '#';
+        imagePreview.style.display = 'none';
     }
 });
 
@@ -32,6 +26,24 @@ function modalCargarProducto() {
     }
 }
 
+// modal agregar stock
+function modalAgregarStock(){
+    const stockModal = document.getElementById('stock-modal');
+    if(stockModal){
+        stockModal.style.display = 'block'
+    }
+}
+
+// modal cambiar precio
+function modalCambiarPRecio(){
+    const precioModal = document.getElementById('precio-modal');
+    if(precioModal){
+        precioModal.style.display = 'block'
+    }
+}
+
+
+
 //modal modificar
 function mostrarModalModificar() {
     const modalEdit = document.getElementById("modify-modal");
@@ -40,13 +52,15 @@ function mostrarModalModificar() {
     }
 }
 
-
+// modal eliminar
 function mostrarModalEliminar() {
     const modalDelet = document.getElementById('delete-modal')
     if(modalDelet){
-        modalDelet.style.display = 'block'
+        modalDelet.style.display = 'block';
     }    
 }
+
+
 
 // para cerrar modales
 function closeModals() {
@@ -54,9 +68,28 @@ function closeModals() {
 
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
-            document.getElementById('product-modal').style.display = 'none';
-            document.getElementById('modify-modal').style.display = 'none';
-            document.getElementById('delete-modal').style.display = 'none';
+            const productModal = document.getElementById('product-modal');
+            const modifyModal = document.getElementById('modify-modal');
+            const deleteModal = document.getElementById('delete-modal');
+            const stockModal = document.getElementById('stock-modal');
+            const precioModal = document.getElementById('precio-modal');
+
+            if (precioModal) {
+                precioModal.style.display = 'none'
+            }
+
+            if (productModal) {
+                productModal.style.display = 'none';
+            }
+            if (modifyModal) {
+                modifyModal.style.display = 'none';
+            }
+            if (deleteModal) {
+                deleteModal.style.display = 'none';
+            }
+            if(stockModal){
+                stockModal.style.display = 'none';
+            }
         });
     });
 }

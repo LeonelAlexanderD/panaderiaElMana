@@ -17,7 +17,7 @@ class Producto(models.Model):
         ('gramo', 'gr.'),
         ('kilogramo', 'kg.')
     ]
-    CATEGORIA = [
+    CATEGORIAS = [
         ('Panaderia', 'panaderia'),
         ('Pasteleria', 'pasteleria')
     ]
@@ -27,5 +27,5 @@ class Producto(models.Model):
     unidad_medida = models.CharField(max_length=10, choices=UNIDADES)
     descripcion = models.TextField(blank=True)
     stock = models.DecimalField(max_digits=6, decimal_places=2, blank=False)
-    categoria = models.CharField(max_length=30, choices=CATEGORIA)
+    categoria = models.CharField(max_length=30, choices=CATEGORIAS)
     tipo = models.CharField(max_length=30, blank=False)
