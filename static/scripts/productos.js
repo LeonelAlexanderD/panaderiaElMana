@@ -1,24 +1,30 @@
-
-document.getElementById('imagen').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    const imagePreview = document.getElementById('image-preview');
+// vista previa de la imagen que cargo en el form
+document.addEventListener('DOMContentLoaded', function() {
+    const imagenInput = document.getElementById('imagen');
     
-    if (file) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = 'block';
-        }
-        
-        reader.readAsDataURL(file);
-    } else {
-        imagePreview.src = '#';
-        imagePreview.style.display = 'none';
+    if (imagenInput) {
+        imagenInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const imagePreview = document.getElementById('image-preview');
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = '#';
+                imagePreview.style.display = 'none';
+            }
+        });
     }
 });
 
-// Función para mostrar el modal de registro de proveedor
+//  modal de alta
 function modalCargarProducto() {
     const productModal = document.getElementById('product-modal');
     if (productModal) {
@@ -26,6 +32,7 @@ function modalCargarProducto() {
     }
 }
 
+//modal modificar
 function mostrarModalModificar() {
     const modalEdit = document.getElementById("modify-modal");
     if(modalEdit){

@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404
 
 from productos.forms import CrearProductoForm, ProductoForm
 from productos.models import Insumo, Producto
@@ -39,7 +40,9 @@ def registrar_producto(request):
             return redirect('productos:listar_productos')
         return JsonResponse({'success': False, 'errors': form.errors})
 
-
+def detalle_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    return render(request,'productos/detalle_producto.html', {'producto':producto})
 
 
 def listar_insumos(request):

@@ -33,7 +33,7 @@
                 <td>{{ producto.precio }} </td>
                 <td>{{ producto.stock }} </td>
                 <td>
-                    <a href="">
+                    <a href="{% url 'productos:detalle_producto' producto.id %}">
                         <button type="button">Ver</button>
                     </a>
                 </td>
