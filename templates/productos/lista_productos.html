@@ -1,31 +1,31 @@
 {% extends "base/base.html" %}
 {% load static %}
-
 {% block title %}
-    Productos - Panaderia El Maná
+Productos - Panaderia El Maná
 {% endblock title %}
 {% block style %}
-    <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
 {% endblock style %}
-    {% block content %}
+{% block content %}
 
-    <div class="container">
-        <div class="title-container">
-            <h1>Productos</h1>
-            <button id="create-btn" onclick="modalCargarProducto()">Cargar Producto</button>
-        </div>
-        <table id="producto-table">
-            <thead>
-                <tr>
-                    <th>Categoria</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Detalles</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if productos %}
+
+<div class="container">
+    <div class="title-container">
+        <h1>Productos</h1>
+        <button id="create-btn" onclick="modalCargarProducto()">Cargar Producto</button>
+    </div>
+    <table id="producto-table">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if productos %}
             {% for producto in productos %}
             <tr>
                 <td>{{ producto.categoria }} </td>
@@ -33,9 +33,11 @@
                 <td>{{ producto.precio }} </td>
                 <td>{{ producto.stock }} </td>
                 <td>
-                    <a href="">
+                    <a href="{% url 'productos:detalle_producto' producto.id %}">
                         <button type="button">Ver</button>
                     </a>
+
+
                 </td>
             </tr>
             {% endfor %}
@@ -44,20 +46,24 @@
                 <td colspan="4">No hay productos disponibles</td>
             </tr>
             {% endif %}
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>
 
-    <div id="product-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Carga de Insumo</h2>
-            <form id="register-product-form" method="post" action="{% url 'productos:registrar_producto' %}" enctype="multipart/form-data">
-                {% csrf_token %}
+
+
+<div id="product-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Carga de Insumo</h2>
+        <form id="register-product-form" method="post" action="{% url 'productos:registrar_producto' %}"
+            enctype="multipart/form-data">
+            {% csrf_token %}
             <label for="imagen">Imagen:</label>
             <input type="file" name="imagen" id="imagen" required accept="image/*">
             <br>
-            <img id="image-preview" src="#" alt="Vista previa" style="display:none; max-width: 200px; margin-left: 10px;">
+            <img id="image-preview" src="#" alt="Vista previa"
+                style="display:none; max-width: 200px; margin-left: 10px;">
 
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" id="nombre" maxlength="30" required>
@@ -71,7 +77,9 @@
                 <option value="unidad">unidad</option>
                 <option value="gramo">gramo</option>
                 <option value="kilogramo">kilogramo</option>
+                
             </select>
+            
 
             <label for="descripcion">Descripcion:</label>
             <textarea name="descripcion" id="descripcion"></textarea>
@@ -85,18 +93,19 @@
                 <option value="Panaderia">Panaderia</option>
                 <option value="Pasteleria">Pasteleria</option>
             </select>
+           
 
             <label for="tipo">Tipo:</label>
-            <input type="text" name="tipo" id="tipo" maxlength="30" required>            
+            <input type="text" name="tipo" id="tipo" maxlength="30" required>
 
             <button type="submit">Guardar</button>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    
 
 
-    <script src="{% static 'scripts/productos.js' %}"></script>
 
-    {% endblock content %}
+<script src="{% static 'scripts/productos.js' %}"></script>
+
+{% endblock content %}

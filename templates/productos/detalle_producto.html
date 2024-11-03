@@ -6,20 +6,32 @@ Proveedores Detalle - Panaderia El Maná
 {% endblock title %}
 
 {% block style %}
-<link rel="stylesheet" href="{% static 'styles/detalles.css' %}">
+
 <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+<link rel="stylesheet" href="{% static 'styles/detalles.css' %}">
 
 {% endblock style %}
 
 {% block content %}
 <div class="container-details ">
-    <section class="section-details">
+    <div class="div-top">
+        <div class="boton-volver">
+            <a href="{% url 'productos:listar_productos' %}">
+                <button type="button">
+                    << Volver</button>
+            </a>
+        </div>
+        <!-- <div class="tittle-container">  -->
         <div class="tittle">
             <h1>Detalle de Producto</h1>
         </div>
+        <!-- </div> -->
+    </div>
+    <section class="section-details">
         <div class="info-box">
             <div class="info-row">
-                <img src="{{ producto.imagen }}" alt="">
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                    style="max-width: 200px; max-height: 200px;">
             </div>
             <div class="info-row">
                 <h3 class="info-label">Nombre:</h3>
@@ -50,8 +62,14 @@ Proveedores Detalle - Panaderia El Maná
                 <h4 class="info-value">{{ producto.tipo }}</h4>
             </div>
             <div class="info-row">
-                <button onclick="mostrarModalModificar()">Modificar</button>  
-                <button onclick="mostrarModalEliminar()">Eliminar</button>                
+                <div>
+                    <button onclick="modalAgregarStock()">Stock</button>
+                    <button onclick="modalCambiarPRecio() ">Precio</button>
+                </div>
+                <div>
+                    <button onclick="mostrarModalModificar()">Modificar</button>
+                    <button onclick="mostrarModalEliminar()">Eliminar</button>
+                </div>
             </div>
         </div>
     </section>
@@ -61,17 +79,59 @@ Proveedores Detalle - Panaderia El Maná
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Registro Proveedor</h2>
-        <form method="post" id="register-proveedor-form" action="">
+
+        <form id="modify-product-form" method="post" action="{% url 'productos:editar_producto' producto.id %}"
+            enctype="multipart/form-data">
             {% csrf_token %}
-            <label for="razonsocial">Razon Social:</label>
-            <input type="text" name="razon_social" id="razonsocial" value="{{ proveedor.razon_social }}" required>
+            <label for="imagen">Imagen:</label>
+            <input type="file" name="imagen" id="imagen"
+                value="{{ form.imagen.value|default_if_none:producto.imagen.url }}" accept="image/*">
+            <br>
+            <!-- <img id="image-preview" src="#" alt="Vista previa" style="display:none; max-width: 200px; margin-left: 10px;"> -->
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                style="max-width: 200px; max-height: 200px;">
 
-            <label for="cuit">CUIT: </label>
-            <input type="number" name="cuit" id="cuit" value="{{ proveedor.cuit }}" required>
+            <label for="nombre">Nombre: {{ producto.nombre }} </label>
+            <input type="text" name="nombre" id="nombre" maxlength="30"
+                value="{{ form.nombre.value|default_if_none:producto.nombre }}">
 
-            <label for="contacto">Contacto:  </label>
-            <input type="number" name="contacto" id="contacto" value="{{ proveedor.contacto }}" required>
+            <label for="precio">Precio: {{ producto.precio }} </label>
+            <input type="number" name="precio" id="precio"
+                value="{{ form.precio.value|default_if_none:producto.precio }}">
 
+            <label for="unidad_medida">Unidad de Medida: {{ producto.unidad_medida }} </label>
+            <select name="unidad_medida" id="unidad_medida"
+                value="{{ form.unidad_medida.value|default_if_none:producto.unidad_medida }}">
+                <option value="">----</option>
+                <option value="unidad" {% if producto.unidad_medida=="unidad" %}selected{% endif %}>unidad</option>
+                <option value="gramo" {% if producto.unidad_medida=="gramo" %}selected{% endif %}>gramo</option>
+                <option value="kilogramo" {% if producto.unidad_medida=="kilogramo" %}selected{% endif %}>kilogramo
+                </option>
+            </select>
+
+            <label for="descripcion">Descripcion: {{ producto.descripcion }} </label>
+            <textarea name="descripcion"
+                id="descripcion">{{ form.nombre.value|default_if_none:producto.descripcion }}</textarea>
+
+            <label for="stock">Stock: {{ producto.stock }} </label>
+            <input type="number" name="stock" id="stock" value="{{ form.stock.value|default_if_none:producto.stock }}">
+
+            <label for="categoria">Categoria: {{ producto.categoria }} </label>
+            <select name="categoria" id="categoria">
+                <!-- <option value="">----</option>
+                <option value="Panaderia" {% if producto.categoria=="Panaderia" %}selected{% endif %}>Panaderia</option>
+                <option value="Pasteleria" {% if producto.categoria=="Pasteleria" %}selected{% endif %}>Pasteleria
+                </option> -->
+                {% for value, display in producto.CATEGORIA_CHOICES %}
+                <option value="{{ value }}" {% if producto.categoria==value %}selected{% endif %}>
+                    {{ display }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="tipo">Tipo: {{ producto.tipo }} </label>
+            <input type="text" name="tipo" id="tipo" maxlength="30"
+                value="{{ form.tipo.value|default_if_none:producto.tipo }}">
             <button type="submit">Guardar</button>
         </form>
     </div>
@@ -81,11 +141,39 @@ Proveedores Detalle - Panaderia El Maná
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Registro Proveedor</h2>
-        <form method="post" id="delete-proveedor-form" action="">
+        <form method="post" id="delete-proveedor-form" action="{% url 'productos:eliminar_producto' producto.id %}">
             {% csrf_token %}
-            <h2>Estas seguro de eliminar a {{ proveedor.razon_social}} ? </h2>            
+            <h2>Estas seguro de eliminar a {{ producto.nombre}} ? </h2>
             <button type="submit">Aceptar</button>
             <button type="button" class="close">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="stock-modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Agregar Stock a {{ producto.nombre }}</h2>
+        <form method="post" action="{% url 'productos:agregar_stock' producto.id %}">
+            {% csrf_token %}
+            <p>Stock Actual: {{ producto.stock }}</p>
+            <label for="stock_adicional">Cantidad a agregar:</label>
+            <input type="number" name="stock_adicional" id="stock_adicional" required min="1">
+            <button type="submit">Aceptar</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="precio-modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Cambiar precio de venta de {{ producto.nombre }}</h2>
+        <form method="post" action="{% url 'productos:cambiar_precio' producto.id %}">
+            {% csrf_token %}
+            <p>Precio Actual: {{ producto.precio }}</p>
+            <label for="precio_nuevo">Nuevo precio:</label>
+            <input type="number" name="precio_nuevo" id="precio_nuevo" required min="1">
+            <button type="submit">Aceptar</button>
         </form>
     </div>
 </div>

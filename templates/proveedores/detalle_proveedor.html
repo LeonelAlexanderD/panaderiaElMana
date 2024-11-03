@@ -42,7 +42,7 @@ Proveedores Detalle - Panaderia El Maná
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Registro Proveedor</h2>
-        <form method="post" id="register-proveedor-form" action="{% url 'proveedores:editar_proveedor' proveedor.id %}">
+        <form method="post" id="modify-proveedor-form" action="{% url 'proveedores:editar_proveedor' proveedor.id %}">
             {% csrf_token %}
             <label for="razonsocial">Razon Social:</label>
             <input type="text" name="razon_social" id="razonsocial" value="{{ proveedor.razon_social }}" required>
