@@ -25,7 +25,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', productos_views.pagina_principal, name='inicio'),
     path('gestion/', productos_views.pagina_gestion, name="gestion"),
-    path('vender/', ventas_views.productos_vender, name='vender'),
+    path('ventas/', include('ventas.urls', namespace='ventas')),
     path('proveedores', include('proveedores.urls', namespace='proveedores')),
-    path("productos/", include('productos.urls', namespace='productos')),
+    path('productos/', include('productos.urls', namespace='productos')),
+    path('usuarios/', include('usuarios.urls', namespace='usuarios')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

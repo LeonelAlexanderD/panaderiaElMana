@@ -1,0 +1,105 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Nueva Venta - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/ventas.css' %}">
+{% endblock style %}
+{% block content %}
+
+<div class="container-details ">
+    <div class="div-top">
+        <div class="boton-volver">
+            <a href="{% url 'productos:listar_productos' %}">
+                <button type="button">
+                    << Volver</button>
+            </a>
+        </div>
+        <!-- <div class="tittle-container">  -->
+        <div class="tittle">
+            <h1>Detalle de Producto</h1>
+        </div>
+        <!-- </div> -->
+    </div>
+    <section class="section-details">
+        <div class="info-box">
+            <div class="info-row">
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                    style="max-width: 200px; max-height: 200px;">
+            </div>
+            <div class="info-row">
+                <h3 class="info-label">Nombre:</h3>
+                <h3 class="info-value">{{ producto.nombre }}</h3>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Precio:</h4>
+                <h4 class="info-value">{{ producto.precio }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Unidad de Medida:</h4>
+                <h4 class="info-value">{{ producto.unidad_medida }}</h4>
+            </div>
+            <div class="info-row">
+                <h3 class="info-label">Descripcion:</h3>
+                <h3 class="info-value">{{ producto.descripcion }}</h3>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Stock:</h4>
+                <h4 class="info-value">{{ producto.stock }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Categoria:</h4>
+                <h4 class="info-value">{{ producto.categoria }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Tipo:</h4>
+                <h4 class="info-value">{{ producto.tipo }}</h4>
+            </div>
+            <div class="info-row">
+                <div>
+                    <button onclick="modalAgregarStock()">Stock</button>
+                    <button onclick="modalCambiarPRecio() ">Precio</button>
+                </div>
+                <div>
+                    <button onclick="mostrarModalModificar()">Modificar</button>
+                    <button onclick="mostrarModalEliminar()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<div id="details-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Detalles </h2>
+        <form id="details-form">
+            <input type="hidden" id="id">
+            <label for="comprobante">Nro. Comprobante:</label>
+            <input type="text" id="comprobante" required>
+
+            <label for="fecha-venta">Fecha de Venta:</label>
+            <input type="text" id="fecha-venta" required>
+
+            <label for="tipo-venta">Tipo de Venta:</label>
+            <input type="text" id="tipo-venta" required>
+
+            <label for="forma-pago">Forma de Pago:</label>
+            <input type="text" id="forma-pago" required>
+
+            <label for="items">Items:</label>
+            <input type="text" id="items" required>
+
+            <label for="total">Total:</label>
+            <input type="text" id="total" required>
+
+            <label for="observacion">Observacion:</label>
+            <input type="text" id="observacion" required>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

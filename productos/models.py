@@ -31,6 +31,6 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
     unidad_medida = models.CharField(max_length=10, choices=UNIDADES)
     descripcion = models.TextField(blank=True)
-    stock = models.DecimalField(max_digits=6, decimal_places=2, blank=False)
+    stock = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
     categoria = models.CharField(max_length=30, choices=CATEGORIAS)
-    tipo = models.CharField(max_length=30, blank=False)
+    subcategoria = models.CharField(max_length=30, blank=False)

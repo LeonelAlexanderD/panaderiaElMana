@@ -8,7 +8,7 @@ from productos.models import Insumo, Producto
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['imagen', 'nombre', 'precio', 'unidad_medida', 'descripcion', 'stock', 'categoria', 'tipo']
+        fields = ['imagen', 'nombre', 'precio', 'unidad_medida', 'descripcion', 'stock', 'categoria', 'subcategoria']
         widgets = {
             'imagen':forms.ClearableFileInput(),
         }
