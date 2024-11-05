@@ -5,9 +5,12 @@
 Nueva Venta - Panaderia El Maná
 {% endblock title %}
 {% block style %}
-<link rel="stylesheet" href="{% static 'styles/ventas.css' %}">
+<link rel="stylesheet" href="{% static 'styles/ventasdos.css' %}">
 {% endblock style %}
 {% block content %}
+<pre id="tipo_venta_choices" style="display: none;">{{ tipo_venta_choices|safe }}</pre>
+<pre id="forma_pago_choices" style="display: none;">{{ forma_pago_choices|safe }}</pre>
+<pre id="tipo_comprobante_choices" style="display: none;">{{ tipo_comprobante_choices|safe }}</pre>
 
 
 
@@ -15,25 +18,35 @@ Nueva Venta - Panaderia El Maná
     {% for categoria, subcategorias in productos.items %}
     <section class="category">
         <h2 class="category-title">{{ categoria }}</h2>
-        {% for subcategoria, items in subcategorias %}
+
+        {% for subcategoria, items in subcategorias.items %}
         <div class="subcategory">
             <h3 class="subcategory-title">{{ subcategoria }}</h3>
             <div class="products">
+
                 {% for producto in items %}
                 <div class="product-card">
-                    <img src="{{ product.imagen.url }}" alt="{{ product.nombre }}" class="product-image">
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-image">
                     <div class="product-info">
-                        <h4 class="product-name"> {{ producto.nombre }} </h4>
-                        <p class="product-descripcion"> {{ producto.descripcion }} </p>
-                        <h3 class="product-price">Precio: {{ producto.precio }} {{producto.medida}} Stock: {{
-                            producto.stock }}</h3>
-                        <button class="add-to-cart" data-id="{{ producto.id }}">Agregar</button>
+                        <h4 class="product-name">{{ producto.nombre }}</h4>
+                        <p class="product-descripcion">{{ producto.descripcion }}</p>
+                        <h3 class="product-price">Precio: {{ producto.precio }} {{ producto.medida }}</h3>
+                            <h3 class="product-price" >Stock: {{ producto.stock }}</h3>
+                        <!-- <button class="add-to-cart" data-id="{{ producto.id }}" onclick="agregarAlCarrito('{{ producto.id }}')">Agregar</button> -->
+                        <form method="post" action="{% url 'ventas:nueva_venta' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                            <input type="number" name="cantidad" id="" min="1" value="1" max="{{ producto.stock }}">
+                            <button type="submit" class="add-to-cart">Agregar</button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}
+
             </div>
         </div>
         {% endfor %}
+
     </section>
     {% endfor %}
 </div>
@@ -41,48 +54,64 @@ Nueva Venta - Panaderia El Maná
 <button id="cart-toggle">Carrito</button>
 
 <div id="cart">
-    <h2>Shopping</h2>
+    <h2>Carrito</h2>
     <button id="hide-cart">Ocultar</button>
-    <div id="cart-items"></div>
-    <div id="cart-total">Total: $ <span id="cart-total-value">0.00</span> </div>
-    <button id="payment-button">Generar Comprobante</button>
+    <div id="cart-items">
+        {% for item in comprobante_temp.items %}
+        <div class="cart-item-div">
+            <h4>{{ item.nombre }}</h4><br>
+            <h4>Cantidad: <input type="number" value="{{ item.cantidad }}" min="1"></h4>
+            <h4>Subtotal: ${{ item.subtotal }}</h4>
+            
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+    <div id="cart-total">Total: $ <span id="cart-total-value"> {{ total_carrito }} </span> </div>
+    <button id="payment-button" onclick="abrirComprobanteModal()"> Generar Comprobante</button>
 </div>
 
 <div id="payment-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Detalles de Compra</h2>
-        <form id="payment-form">
-            <label for="sale-date">Fecha de Venta:</label>
-            <input type="date" id="sale-date"> value="{{ comprobante.fecha_de_venta }}" </div>
+        <form id="payment-form" method="post" action="{% url 'ventas:generar_comprobante' %}">
+            {% csrf_token %}
+            <label for="fecha_de_venta">Fecha de Venta:</label>
+            <input type="date" id="fecha_de_venta" name="fecha_de_venta" value="{{ comprobante.fecha_de_venta }}">
 
-            <label for="sale-type">Tipo de venta:</label>
-            <select id="sale-type" required>
-                <option value="contado">Contado</option>
-                <option value="credito">Credito</option>
+            <label for="tipo_de_venta">Tipo de venta:</label>
+            <select id="tipo_de_venta" name="tipo_de_venta" required>
+
             </select>
 
-            <label for="payment-method">Forma de Pago:</label>
-            <select id="payment-method" required>
-                <option value="efectivo">Efectivo</option>
-                <option value="tarjeta">Tarjeta</option>
-                <option value="transferencia">Transferencia</option>
+            <label for="forma_de_pago">Forma de Pago:</label>
+            <select id="forma_de_pago" name="forma_de_pago" required>
+
             </select>
 
-            <label for="receipt-type">Tipo de Comprobante:</label>
-            <select id="receipt-type" required>
-                <option value="invoice">Factura</option>
-                <option value="ticket">Ticket</option>
+            <label for="tipo_comprobante">Tipo de Comprobante:</label>
+            <select id="tipo_comprobante" name="tipo_comprobante" required>
+
             </select>
 
-            <label for="receipt-number">Numero de Comprobante:</label>
-            <input type="text" id="receipt-number" value="{{ comprobante.id }}" readonly>
+            <label for="numero_comprobante">Numero de Comprobante:</label>
+            <input type="text" id="numero_comprobante" name="numero_comprobante" value="{{ comprobante.id }}"
+                placeholder="{{ comprobante.id }}" readonly>
 
-            <label for="additional-observations">Observacion Adicional:</label>
-            <textarea id="additional-observations"></textarea>
+            <label for="observacion">Observacion Adicional: </label>
+            <textarea id="observacion" name="observacion"></textarea>
 
-            <h3>Order Summary</h3>
-            <div id="resumen-pedido"></div>
+            <h3>Resumen</h3>
+            <div id="resumen-pedido">
+                {% for item in items %}
+                  <div class="payment-item">
+                    <h4>{{ item.producto.nombre }} </h4>
+                    <p>Cantidad: {{ item.cantidad }} </p>
+                    <p>Subtotal: {{ item.subtotal }} </p>
+                  </div>
+                {% endfor %}
+            </div>
             <div id="total-pedido"></div>
 
             <button type="submit">Guardar</button>
@@ -90,11 +119,7 @@ Nueva Venta - Panaderia El Maná
         </form>
     </div>
 </div>
-<script src="{% static 'scripts/carrito.js' %}"></script>
+<!-- <script src="{% static 'scripts/carrito.js' %}"></script> -->
+<script src="{% static 'scripts/carritoVenta.js' %}"></script>
 
 {% endblock content %}
-<!-- <footer>
-        {% include 'header-footer/footer.html' %}
-    </footer>
-</body>
-</html> -->

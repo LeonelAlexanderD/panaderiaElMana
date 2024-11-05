@@ -19,10 +19,18 @@
         <h1>El Maná</h1>
         <nav>
             <ul>
-                <li>
-                </li>
+
+                {% if user.is_authenticated %}
+                {{user.username}}
+                <li><a href="{% url 'usuarios:logout' %}"> Cerrar Sesion</a></li>
                 <li><a href="{% url 'gestion' %}" id="management-btn">Gestion</a></li>
-                <li><a href="{% url 'vender' %}" id="sell-btn">Venta</a></li>
+                <li><a href="{% url 'ventas:nueva_venta' %}" id="sell-btn">Venta</a></li>
+
+                {% else %}
+                <li><a href="{% url 'usuarios:login' %}" id="enter-btn">Ingresar</a></li>
+                {% endif %}
+
+
             </ul>
         </nav>
     </header>

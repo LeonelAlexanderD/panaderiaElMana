@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Empleado(models.Model):
@@ -7,6 +8,7 @@ class Empleado(models.Model):
         ('Gerente', 'Gerente'),
         ('Vendedor', 'Vendedor'),
     ]
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='empleado')
     perfil = models.CharField(choices=PERFIL_CHOICES)
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
