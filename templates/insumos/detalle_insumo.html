@@ -1,0 +1,130 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+    Insumos - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/detalles.css' %}">
+
+{% endblock style %}
+    {% block content %}
+    <pre id="choices" style="display: none;">{{ unidades_choices|safe }}</pre>
+
+    <div class="container-details ">
+        <div class="boton-volver">
+            <a href="{% url 'productos:listar_insumos' %}">
+                <button type="button">
+                    << Volver</button>
+            </a>
+        </div>
+        <div class="div-top">
+            <div class="tittle">
+                <h1>Detalle de Producto</h1>
+            </div>
+        </div>
+        <section class="section-details detalle-producto">
+            <div class="info-box">
+                
+                <div class="info-row">
+                    <h3 class="info-label">Nombre:</h3>
+                    <h3 class="info-value">{{ insumo.nombre }}</h3>
+                </div>
+                <div class="info-row">
+                    <h4 class="info-label">Marca:</h4>
+                    <h4 class="info-value">{{ insumo.marca }}</h4>
+                </div>
+                <div class="info-row">
+                    <h4 class="info-label">Tipo:</h4>
+                    <h4 class="info-value">{{ insumo.tipo }}</h4>
+                </div>
+                <div class="info-row">
+                    <h3 class="info-label">Stock:</h3>
+                    <h3 class="info-value">{{ insumo.stock }}</h3>
+                </div>
+                <div class="info-row">
+                    <h4 class="info-label">Unidad de Medida:</h4>
+                    <h4 class="info-value">{{ insumo.medida }}</h4>
+                </div>
+                <div class="info-row">
+                    <h4 class="info-label">Punto de Pedido:</h4>
+                    <h4 class="info-value">{{ insumo.punto_de_pedido }}</h4>
+                </div>
+                
+                <div class="botones-box">
+                    <div class="botones-box">
+                        <button onclick="modalAgregarStock()">Stock</button>
+                    </div>
+                    <div class="botones-box">
+                        <button onclick="mostrarModalModificar()">Modificar</button>
+                        <button onclick="mostrarModalEliminar()">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+<div id="modify-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Modificar Insumo</h2>
+        <form id="modify-insumo-form">
+            <input type="hidden" id="modify-id">
+            <label for="modify-name">Nombre:</label>
+            <input type="text" id="modify-name" name="nombre" required>
+
+            <label for="modify-marca">Marca:</label>
+            <input type="text" id="modify-marca" name="marca" required>
+
+            <label for="modify-tipo">Tipo:</label>
+            <input type="text" id="modify-tipo" name="tipo" required>
+
+            <label for="modify-cantidad">Stock:</label>
+            <input type="text" id="modify-cantidad" name="stock" required>
+
+            <label for="modify-medida">Unidad de Medida:</label>
+            <select id="modify-medida" name="medida">
+                <option value="">---</option>
+            </select>            
+
+            <label for="modify-punto_pedido">Punto de Pedido:</label>
+            <input type="text" id="modify-punto_pedido" name="punto_de_pedido" required>
+
+            <div class="form-buttons">
+                <button type="button" id="cancel-modify">Cancelar</button>
+                <button type="submit">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="delete-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Registro Proveedor</h2>
+        <form method="post" id="delete-proveedor-form" action="{% url 'productos:eliminar_insumo' insumo.id %}">
+            {% csrf_token %}
+            <h2>Estas seguro de eliminar a {{ insumo.nombre}} ? </h2>
+            <button type="submit">Aceptar</button>
+            <button type="button" class="close">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="stock-modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Agregar Stock a {{ insumo.nombre }}</h2>
+        <form method="post" action="{% url 'productos:insumo_stock' insumo.id %}">
+            {% csrf_token %}
+            <p>Stock Actual: {{ insumo.stock }}</p>
+            <label for="stock_adicional">Cantidad a agregar:</label>
+            <input type="number" name="stock_adicional" id="stock_adicional" required min="1">
+            <button type="submit">Aceptar</button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'scripts/insumos.js' %}"></script>
+{% endblock content %}

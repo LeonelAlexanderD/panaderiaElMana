@@ -8,19 +8,56 @@ Nueva Venta - Panaderia El Maná
 <link rel="stylesheet" href="{% static 'styles/ventasdos.css' %}">
 {% endblock style %}
 {% block content %}
+
+<nav class="fixed-navbar">
+    <!-- Menú de Categorías -->
+    <ul class="navbar">
+        <li>
+            <a href="#">Categorías</a>
+            <ul class="dropdown">
+                {% for categoria in productos.keys %}
+                <li><a href="#{{ categoria|slugify }}">{{ categoria }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+    <!-- Menú de Subcategorías -->
+    <ul class="navbar">
+        <li>
+            <a href="#">Subcategorías</a>
+            <ul class="dropdown">
+                {% for categoria, subcategorias in productos.items %}
+                {% for subcategoria in subcategorias.keys %}
+                <li><a href="#{{ categoria|slugify }}-{{ subcategoria|slugify }}">{{ subcategoria }}</a></li>
+                {% endfor %}
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+</nav>
+
 <pre id="tipo_venta_choices" style="display: none;">{{ tipo_venta_choices|safe }}</pre>
 <pre id="forma_pago_choices" style="display: none;">{{ forma_pago_choices|safe }}</pre>
 <pre id="tipo_comprobante_choices" style="display: none;">{{ tipo_comprobante_choices|safe }}</pre>
-
+{% if messages %}
+<div class="alert-container">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
 
 <div class="container">
     {% for categoria, subcategorias in productos.items %}
-    <section class="category">
+    <section class="category" id="{{ categoria }}">
         <h2 class="category-title">{{ categoria }}</h2>
 
         {% for subcategoria, items in subcategorias.items %}
-        <div class="subcategory">
+        <div class="subcategory" id="{{ subcategoria }}">
             <h3 class="subcategory-title">{{ subcategoria }}</h3>
             <div class="products">
 
@@ -31,9 +68,9 @@ Nueva Venta - Panaderia El Maná
                         <h4 class="product-name">{{ producto.nombre }}</h4>
                         <p class="product-descripcion">{{ producto.descripcion }}</p>
                         <h3 class="product-price">Precio: {{ producto.precio }} {{ producto.medida }}</h3>
-                            <h3 class="product-price" >Stock: {{ producto.stock }}</h3>
+                        <h3 class="product-price">Stock: {{ producto.stock }}</h3>
                         <!-- <button class="add-to-cart" data-id="{{ producto.id }}" onclick="agregarAlCarrito('{{ producto.id }}')">Agregar</button> -->
-                        <form method="post" action="{% url 'ventas:nueva_venta' %}">
+                        <form method="post" action="{% url 'ventas:agregar_producto_carrito' %}">
                             {% csrf_token %}
                             <input type="hidden" name="producto_id" value="{{ producto.id }}">
                             <input type="number" name="cantidad" id="" min="1" value="1" max="{{ producto.stock }}">
@@ -59,13 +96,36 @@ Nueva Venta - Panaderia El Maná
     <div id="cart-items">
         {% for item in comprobante_temp.items %}
         <div class="cart-item-div">
+
+            <img src="{{ item.imagen }}" alt="{{ producto.nombre }}" style="max-width: 200px; max-height: 150px;">
             <h4>{{ item.nombre }}</h4><br>
-            <h4>Cantidad: <input type="number" value="{{ item.cantidad }}" min="1"></h4>
-            <h4>Subtotal: ${{ item.subtotal }}</h4>
-            
+            <div class="quantity-controls">
+                <!-- <button type="button" class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button> -->
+                <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" class="quantity-input" " readonly>
+                <!-- <button type=" button" class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button> -->
+            </div>
+            <h4>Subtotal: $<span class="subtotal-value" data-price="{{ item.precio }}">{{ item.subtotal }}</span></h4>
+
+            <!-- Botón para eliminar el producto -->
+            <form method="post" action="{% url 'ventas:actualizar_o_eliminar_producto' %}">
+                {% csrf_token %}
+                <input type="hidden" name="producto_id" value="{{ item.producto_id }}">
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="remove-item">Eliminar</button>
             </form>
+            <!-- <form method="post" action="{% url 'ventas:actualizar_o_eliminar_producto' %}">
+                {% csrf_token %}
+                <input type="hidden" name="producto_id" value="{{ item.producto_id }}">
+                <input type="hidden" name="accion" value="actualizar">
+                <label>Cantidad: </label>
+                <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" onchange="this.form.submit()">
+                <h4>Subtotal: ${{ item.subtotal }}</h4>
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="remove-item">Eliminar</button>
+            
+            </form> -->
         </div>
-    {% endfor %}
+        {% endfor %}
     </div>
     <div id="cart-total">Total: $ <span id="cart-total-value"> {{ total_carrito }} </span> </div>
     <button id="payment-button" onclick="abrirComprobanteModal()"> Generar Comprobante</button>
@@ -95,21 +155,19 @@ Nueva Venta - Panaderia El Maná
 
             </select>
 
-            <label for="numero_comprobante">Numero de Comprobante:</label>
+            <!-- <label for="numero_comprobante">Numero de Comprobante:</label>
             <input type="text" id="numero_comprobante" name="numero_comprobante" value="{{ comprobante.id }}"
-                placeholder="{{ comprobante.id }}" readonly>
+                placeholder="{{ comprobante.id }}" readonly> -->
 
             <label for="observacion">Observacion Adicional: </label>
             <textarea id="observacion" name="observacion"></textarea>
 
             <h3>Resumen</h3>
             <div id="resumen-pedido">
-                {% for item in items %}
-                  <div class="payment-item">
-                    <h4>{{ item.producto.nombre }} </h4>
-                    <p>Cantidad: {{ item.cantidad }} </p>
-                    <p>Subtotal: {{ item.subtotal }} </p>
-                  </div>
+                {% for item in comprobante_temp.items %}
+                <div class="payment-item">
+                    {{ item.nombre }} x Cantidad: {{ item.cantidad }} = Subtotal: ${{ item.subtotal }} <br>
+                </div>
                 {% endfor %}
             </div>
             <div id="total-pedido"></div>

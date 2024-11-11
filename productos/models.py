@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Insumo(models.Model):
     UNIDADES = [
@@ -7,13 +8,15 @@ class Insumo(models.Model):
         ('gramo', 'gr.'),
         ('kilogramo', 'kg.')
     ]
-    marca = models.CharField(max_length=30)
-    tipo = models.CharField(max_length=30)
     nombre = models.CharField(max_length=30)
-    cantidad = models.DecimalField(max_digits=6, decimal_places=2)
+    marca = models.CharField(max_length=30)
+    tipo = models.CharField(max_length=30)    
+    stock = models.DecimalField(max_digits=10, decimal_places=2)
     medida = models.CharField(max_length=30, choices=UNIDADES)
     punto_de_pedido = models.DecimalField(max_digits=6, decimal_places=2)
     
+    def __str__(self):
+        return f"{self.nombre}, marca: {self.marca}"
 
 
 class Producto(models.Model):

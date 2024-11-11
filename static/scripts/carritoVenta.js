@@ -1,9 +1,16 @@
-
+setTimeout(function() {
+    const alertContainer = document.querySelector('.alert-container');
+    if (alertContainer) {
+        alertContainer.style.transition = "opacity 1s";
+        alertContainer.style.opacity = "0";
+        setTimeout(() => alertContainer.style.display = "none", 1000);
+    }
+}, 3000); 
 
 
 // carrito
 const carritoShow = document.getElementById('cart-toggle');
-const carritoHide = document.getElementById('hide-cart')
+const carritoHide = document.getElementById('hide-cart');
 const CarritoMenu = document.getElementById('cart');
 
 carritoShow.addEventListener('click', () => {
@@ -109,13 +116,79 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-const closeModal = document.getElementsByClassName('close');
-const cancelPayment = document.getElementById('cancel-payment');
+document.addEventListener('DOMContentLoaded', () => {
+    const closeModal = document.getElementsByClassName('close')[0]; // Asegúrate de que el elemento exista
+    const cancelPayment = document.getElementById('cancel-payment');
+    const modalPago = document.getElementById('payment-modal');
 
-closeModal.addEventListener('click', () => {
-    paymentModal.style.display = 'none';
+    function cerrarModalPago() {
+        if (modalPago) {
+            modalPago.style.display = 'none';
+        }
+    }
+
+    if (closeModal) {
+        closeModal.addEventListener('click', cerrarModalPago);
+    } else {
+        console.error("No se encontró el elemento con la clase 'close'");
+    }
+
+    if (cancelPayment) {
+        cancelPayment.addEventListener('click', cerrarModalPago);
+    } else {
+        console.error("No se encontró el botón con el id 'cancel-payment'");
+    }
 });
 
-cancelPayment.addEventListener('click', () => {
-    paymentModal.style.display = 'none';
-});
+// carrito
+// function adjustQuantity(button, change) {
+//     // Obtener el contenedor principal del producto en el carrito
+//     const cartItemDiv = button.closest(".cart-item-div");
+
+//     // Obtener el input de cantidad y su valor actual
+//     const quantityInput = cartItemDiv.querySelector(".quantity-input");
+//     let currentQuantity = parseInt(quantityInput.value);
+//     const newQuantity = currentQuantity + change;
+
+//     // Calcular la nueva cantidad y ajustar si está dentro del rango permitido
+//     if (newQuantity >= 1) {
+//         quantityInput.value = newQuantity;
+
+//         // Actualizar el subtotal
+//         const price = parseFloat(cartItemDiv.querySelector(".subtotal-value").dataset.price); 
+//         const subtotal = newQuantity * price;
+//         cartItemDiv.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
+
+//         // Actualizar el valor en el formulario oculto para enviar la cantidad correcta
+//         const productoId = cartItemDiv.querySelector("input[name='producto_id']").value;
+//         fetch("{% url 'ventas:actualizar_o_eliminar_producto' %}", {
+//             method: "POST",
+//             headers:{
+//                 "Content-Type": "aplicaction/x-www-form-urlencoded",
+//                 "X-CSRFToken": "{{ csrf_token }}"
+//             },
+//             body: new URLSearchParams({
+//                 "producto_id": productoId,
+//                 "cantidad": newQuantity,
+//                 "accion": "actualizar"
+//             })
+//         })
+//         .then(response => response.json())
+//         .then(data=>{
+//             if(data.success){
+//                 document.getElementById("cart-total-value").textContent = data.total_carrito;
+//             }
+//         })
+
+
+
+//         const hiddenInput = document.createElement("input");
+//         hiddenInput.type = "hidden";
+//         hiddenInput.name = "cantidad";
+//         hiddenInput.value = newQuantity;
+//         cartItemDiv.querySelector("form[action*='actualizar_o_eliminar_producto']").appendChild(hiddenInput);
+
+//         // Opción: Enviar automáticamente la cantidad actualizada al backend (opcional)
+//         sendUpdatedQuantity(cartItemDiv, newQuantity);
+//     }
+// }

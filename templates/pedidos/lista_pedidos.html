@@ -1,0 +1,105 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+Productos - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+{% block content %}
+<pre id="estados" style="display: none;">{{ estados|safe }}</pre>
+
+
+<div class="container">
+    <div class="title-container">
+        <h1>Pedidos</h1>
+        <a href="{% url 'proveedores:nuevo_pedido' %}">
+            <button id="create-btn">Realizar Pedido</button>
+        </a>
+    </div>
+    <table id="producto-table">
+        <thead>
+            <tr>
+                <th>Proveedor</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if pedidos %}
+            {% for pedido in pedidos %}
+            <tr>
+                <td>{{ pedido.proveedor.razon_social }} </td>
+                <td>{{ pedido.fecha_pedido }} </td>
+                <td>{{ pedido.estado }} </td>
+                <td>
+
+                    <a href="{% url 'proveedores:detalle_pedido' pedido.id %}">
+                        <button type="button">Ver</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">No hay productos disponibles</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 
+
+<div id="pedido-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Carga de Insumo</h2>
+        <form id="register-product-form" method="post" action="{% url 'proveedores:nuevo_pedido' %}">
+            {% csrf_token %}
+           
+            <label for="imagen">Imagen:</label>
+            <input type="file" name="imagen" id="imagen" required accept="image/*">
+            <br>
+            <img id="image-preview" src="#" alt="Vista previa"
+                style="display:none; max-width: 200px; margin-left: 10px;">
+
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre" maxlength="30" required>
+
+            <label for="precio">Precio:</label>
+            <input type="number" name="precio" id="precio" required>
+
+            <label for="unidad_medida">Unidad de Medida:</label>
+            <select name="unidad_medida" id="unidad_medida" required>
+                <option value="">----</option>                
+            </select>
+            
+
+            <label for="descripcion">Descripcion:</label>
+            <textarea name="descripcion" id="descripcion"></textarea>
+
+            <label for="stock">Stock:</label>
+            <input type="number" name="stock" id="stock" required>
+
+            <label for="categoria">Categoria:</label>
+            <select name="categoria" id="categoria" required>
+                <option value="">----</option>
+            </select>
+           
+
+            <label for="subcategoria">subcategoria:</label>
+            <input type="text" name="subcategoria" id="subcategoria" maxlength="30" required>
+
+            <button type="submit">Guardar</button> 
+        </form>
+    </div>
+</div>
+ -->
+
+
+
+<script src="{% static 'scripts/pedidos.js' %}"></script>
+
+{% endblock content %}

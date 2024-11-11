@@ -1,0 +1,56 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+Productos - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+{% block content %}
+<pre id="estados" style="display: none;">{{ estados|safe }}</pre>
+
+
+<div class="container">
+    <div class="title-container">
+        
+    </div>
+    <table id="producto-table">
+        <thead>
+            <tr>
+                <th>Fecha Recepcion</th>
+                <th>Fecha de Pedido</th>
+                <th>Empleado Receptor</th>
+                <th>N° Pedido</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if recepciones %}
+            {% for recepcion in recepciones %}
+            <tr>
+                <td>{{ recepcion.fecha_recepcion }} </td>
+                <td>{{ recepcion.pedido.fecha_pedido }} </td>
+                <td>{{ recepcion.empleado_receptor.apellido }} </td>
+                <td>{{ recepcion.pedido.id }} </td>
+                <td>
+                    <a href="{% url 'proveedores:detalle_recepcion' recepcion.id %}">
+                        <button> Ver Ficha</button>
+                    </a>                    
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">No hay recepciones disponibles</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<!-- <script src="{% static 'scripts/pedidos.js' %}"></script> -->
+
+{% endblock content %}

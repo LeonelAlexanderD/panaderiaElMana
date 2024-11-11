@@ -1,0 +1,43 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+Productos - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+{% block content %}
+<pre id="estados" style="display: none;">{{ estados|safe }}</pre>
+
+<div class="container">
+    <div>
+        <h2>Realizar Pedido</h2>
+        <form method="POST" action="{% url 'proveedores:nuevo_pedido' %}">
+            {% csrf_token %}
+            
+            <label for="id_proveedor">Proveedor:</label>
+            <select id="id_proveedor" name="proveedor">
+                <option value="">Seleccione un proveedor</option>
+                {% for proveedor in proveedores %}
+                    <option value="{{ proveedor.id }}">{{ proveedor.razon_social }}</option>
+                {% endfor %}
+            </select>
+        
+            <label for="observacion">Observación:</label>
+            <textarea id="observacion" name="observacion"></textarea>
+        
+            <div id="insumos-container">
+                <!-- Aquí se cargarán los insumos del proveedor seleccionado -->
+            </div>
+        
+            <button type="submit">Realizar Pedido</button>
+        </form>
+    </div>
+
+
+</div>
+<script>
+    const obtenerInsumosUrl = "{% url 'proveedores:obtener_insumos' 0 %}";
+</script>
+<script src="{% static 'scripts/pedidos.js' %}"></script>
+{% endblock content %}

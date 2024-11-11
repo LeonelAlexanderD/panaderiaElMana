@@ -22,12 +22,34 @@
                     <th>Nombre</th>
                     <th>Marca</th>
                     <th>Tipo</th>
-                    <th>Cantidad</th>
-                    <th>Medida</th>
+                    <th>Stock</th>
+                    <th>Detalles</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- filas -->
+                {% if insumos %}
+            {% for insumo in insumos %}
+            <tr>
+                <td>{{ insumo.nombre }} </td>
+                <td>{{ insumo.marca }} </td>
+                <td>{{ insumo.tipo }} </td>
+                <td>
+                    {{ insumo.stock }}
+                    {% if insumo.stock <= insumo.punto_de_pedido %}
+                        <span class="puntobajo">Bajo</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    <a type="button" href="{% url 'productos:detalle_insumo' insumo.id %}">VER</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">No hay insumos disponibles</td>
+            </tr>
+            {% endif %}
             </tbody>
         </table>
     </div>
@@ -36,63 +58,34 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Carga de Insumo</h2>
-            <form id="register-insumo-form">
+            <form id="register-insumo-form" method="post" action="{% url 'productos:cargar_insumo' %}">
+                {% csrf_token %}
                 <label for="name">Nombre:</label>
-                <input type="text" id="name" required>
+                <input type="text" id="name" name="nombre" required>
 
                 <label for="marca">Marca:</label>
-                <input type="text" id="marca" required>
+                <input type="text" id="marca" name="marca" required>
 
                 <label for="tipo">Tipo:</label>
-                <input type="text" id="tipo" required>
+                <input type="text" id="tipo" name="tipo" required>
                 
                 <label for="cantidad">Cantidad:</label>
-                <input type="text" id="cantidad" required>
+                <input type="text" id="cantidad" name="stock" required>
 
                 <label for="medida">Unidad de Medida: </label>
-                <select name="medida" id="medida">
+                <select name="medida" id="medida" name="medida" >
                     <option value="">----</option>
                 </select>
 
                 <label for="punto_pedido">Punto de Pedido:</label>
-                <input type="text" id="punto_pedido" required>
+                <input type="text" id="punto_pedido" name="punto_de_pedido" required>
 
                 <button type="submit">Guardar</button>
             </form>
         </div>
     </div>
 
-    <div id="modify-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Modificar Insumo</h2>
-            <form id="modify-insumo-form">
-                <input type="hidden" id="modify-id">
-                <label for="modify-name">Nombre:</label>
-                <input type="text" id="modify-name" required>
-
-                <label for="modify-marca">Marca:</label>
-                <input type="text" id="modify-marca" required>
-
-                <label for="modify-tipo">Tipo:</label>
-                <input type="text" id="modify-tipo" required>
-
-                <label for="modify-cantidad">Cantidad:</label>
-                <input type="text" id="modify-cantidad" required>
-
-                <label for="modify-medida">Medida:</label>
-                <input type="text" id="modify-medida" required>
-
-                <label for="modify-punto_pedido">Punto de Pedido:</label>
-                <input type="text" id="modify-punto_pedido" required>
-
-                <div class="form-buttons">
-                    <button type="button" id="cancel-modify">Cancelar</button>
-                    <button type="submit">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    
 
     <script src="{% static 'scripts/insumos.js' %}"></script>
     {% endblock content %}

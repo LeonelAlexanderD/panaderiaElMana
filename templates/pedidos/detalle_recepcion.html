@@ -1,0 +1,75 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Insumos - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+<link rel="stylesheet" href="{% static 'styles/detalles.css' %}">
+
+{% endblock style %}
+{% block content %}
+<pre id="choices" style="display: none;">{{ unidades_choices|safe }}</pre>
+
+<div class="container-details ">
+    <div class="boton-volver">
+        <a href="{% url 'proveedores:listar_recepciones' %}">
+            <button type="button">
+                << Volver</button>
+        </a>
+    </div>
+    <div class="div-top">
+        <div class="tittle">
+            <h1>Detalle de Recepcion</h1>
+        </div>
+    </div>
+    
+    <section class="section-details detalle-producto">
+        <div class="info-box">
+
+            <div class="info-row">
+                <h3 class="info-label">Empleado Receptor:</h3>
+                <h3 class="info-value">{{ recepcion.empleado.nombre }}</h3>
+            </div>
+
+            <div class="info-row">
+                <h4 class="info-label">Numero de Pedido:</h4>
+                <h4 class="info-value">{{ recepcion.pedido.id }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">fecha_recepcion:</h4>
+                <h4 class="info-value">{{ pedido.proveedor.razon_social }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Conformidad:</h4>
+                <h4 class="info-value">{{ recepcion.conformidad }}</h4>
+            </div>
+            <div class="info-row">
+                <h4 class="info-label">Observacion:</h4>
+                <h4 class="info-value">{{ recepcion.observacion }}</h4>
+            </div>
+            <div class="">
+                <h4 class="info-label">Insumos pedidos:</h4>
+                <div class="info-items">
+                {% if items %}
+                {% for item in items %}
+                <div>         
+                    <strong>Insumo:</strong> {{ item.insumo.nombre }}
+                    <strong>Precio Unitario:</strong> {{ item.precio_unitario }}
+                    <strong>Cantidad Recibida:</strong> {{ item.cantidad_recibida }}
+                    <strong>Subtotal:</strong> {{ item.precio_total }}   
+                </div>                                  
+                {% endfor %}
+                {% endif %}
+            </div>  
+            </div>
+
+            <div class="info-row">
+                <strong>Precio Total del pedido: {{ recepcion.total_pedido }} </strong>
+            </div>                        
+        </div>
+    </section>
+</div>
+
+{% endblock content %}

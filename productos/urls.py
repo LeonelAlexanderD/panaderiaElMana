@@ -6,6 +6,9 @@ app_name = 'productos'
 urlpatterns = [
     path('listar_insumos', views.listar_insumos, name='listar_insumos'),
     path('cargar_insumo', views.cargar_insumo, name='cargar_insumo'),
+    path('detalle_insumo/<int:id>', views.detalle_insumo, name='detalle_insumo'),
+    path('eliminar_insumo/<int:id>', views.eliminar_insumo, name='eliminar_insumo'),
+    path('insumo_stock/<int:id>', views.insumo_stock, name='insumo_stock'),
     
     path('listar_productos', views.listar_productos, name='listar_productos'),
     path('registrar_producto', views.registrar_producto, name='registrar_producto'),

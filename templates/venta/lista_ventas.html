@@ -2,41 +2,40 @@
 {% load static %}
 
 {% block title %}
-    Historial Venta - Panaderia El Maná
+Historial Venta - Panaderia El Maná
 {% endblock title %}
 {% block style %}
-    <link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
 {% endblock style %}
-    {% block content %}
+{% block content %}
 
 
 
-    <div class="container">
-        <div class="title-container">
-            <h1>Listado de Ventas</h1>
-        </div>
-        <table id="ventas-table">
-            <thead>
-                <tr>
-                    <th>Nro. Comprobante</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                    <th>Vendedor</th>
-                    <th>Detalles</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if ventas %}
+<div class="container">
+    <div class="title-container">
+        <h1>Listado de Ventas</h1>
+    </div>
+    <table id="ventas-table">
+        <thead>
+            <tr>
+                <th>Nro. Comprobante</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Vendedor</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if ventas %}
             {% for venta in ventas %}
             <tr>
-                <td>{{ venta.id }} </td>
                 <td>{{ venta.comprobante.id }} </td>
-                <td>{{ venta.comprobante.fecha_venta }} </td>
+                <td>{{ venta.comprobante.fecha_de_venta }} </td>
                 <td>{{ venta.comprobante.total_comprobante }} </td>
                 <td>{{ venta.vendedor.nombre }} {{ venta.vendedor.apellido }} </td>
                 <td>
-                    <a href="{% url 'ventas:ver_comprobante' producto.id %}">
-                        <button type="button">Ver Comprobante</button>
+                    <a href="{% url 'ventas:ver_detalles_venta' venta.id %}">
+                        <button type="button">Ver Detalles</button>
                     </a>
                 </td>
             </tr>
@@ -46,16 +45,15 @@
                 <td colspan="4">No hay ventas registradas</td>
             </tr>
             {% endif %}
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>
 
 
-    
 
 
-    <!-- <script src="{% static 'scripts/lista_ventas.js' %}"></script> -->
 
-    
-    {% endblock content %}
- 
+<!-- <script src="{% static 'scripts/lista_ventas.js' %}"></script> -->
+
+
+{% endblock content %}

@@ -31,6 +31,15 @@ Proveedores Detalle - Panaderia El Maná
                 <h4 class="info-value">{{ proveedor.contacto }}</h4>
             </div>
             <div class="info-row">
+                {% if insumos %}
+                {% for insumo in insumos %}
+                <strong>Nombre:</strong> {{ insumo.nombre }}<br>
+                <strong>Marca:</strong> {{ insumo.marca }}<br>
+                <strong>Tipo:</strong> {{ insumo.tipo }}<br>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="info-row">
                 <button onclick="mostrarModalModificar()">Modificar</button>  
                 <button onclick="mostrarModalEliminar()">Eliminar</button>                
             </div>

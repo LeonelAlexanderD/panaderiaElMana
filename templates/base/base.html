@@ -16,12 +16,17 @@
 
 <body>
     <header class="header">
-        <h1>El Maná</h1>
-        <nav>
-            <ul>
+        
+        <a href="{% url 'inicio' %}"><h1>El Maná</h1></a>
 
+        <button class="menu-toggle" aria-label="Abrir menú">
+            ☰
+        </button>
+        <nav class="nav-menu">
+            <ul >
                 {% if user.is_authenticated %}
-                {{user.username}}
+                <h2 class="usuario">{{user.username}}</h2>
+                
                 <li><a href="{% url 'usuarios:logout' %}"> Cerrar Sesion</a></li>
                 <li><a href="{% url 'gestion' %}" id="management-btn">Gestion</a></li>
                 <li><a href="{% url 'ventas:nueva_venta' %}" id="sell-btn">Venta</a></li>
@@ -41,6 +46,6 @@
     <footer class="footer">
         <span class="texto-footer">Derechos Reservados Panadería El Maná</span>
     </footer>
+    <script src="{% static 'scripts/base.js' %}"></script>
 </body>
-
 </html>

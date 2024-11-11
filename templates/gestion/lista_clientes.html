@@ -1,0 +1,61 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Proveedores - Panaderia El Maná
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="container">
+    <div class="title-container">
+        <h1>Clientes Mayoristas</h1>
+        <button id="open-register-modal-btn" onclick="mostrarModalRegistro()">Registrar Cliente</button>
+    </div>
+    <table id="cliente-table">
+        <thead>
+            <tr>
+                <th>Razon Social</th>
+                <th>CUIT</th>
+                <th>Contacto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if clientes %}
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.razon_social }} </td>
+                <td>{{ cliente.cuit }} </td>
+                <td>{{ cliente.telefono }} </td>              
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">No hay clientes registrados</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- registro -->
+<div id="register-modal" class="modal">
+    <div class="modal-content"> 
+        <span class="close">&times;</span>
+        <h2>Registro Cliente</h2>
+        <form method="post" id="register-cliente-form" action="{% url 'ventas:registrar_cliente' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
+
+
+<script src="{% static 'scripts/clientes.js' %}"></script>
+{% endblock content %}

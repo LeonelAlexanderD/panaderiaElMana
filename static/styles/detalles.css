@@ -46,12 +46,59 @@
 }
 
 .info-row {
+    width: 60%;
     display: flex; 
     justify-content: space-between; 
     margin-bottom: 10px; 
     color: var(--text-color);
 }
+.detalles-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
 
+.botones-box{
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+}
+
+
+.items{
+    font-style: oblique;
+    font-weight: bold;
+}
+
+.items .item{
+    display: flex;
+}
+
+hr{
+    color: black;
+    height: 3px;
+    width: 60%;
+}
+.boton-volver{
+    position: fixed;
+    left: 1rem;
+    top: 7rem;
+    background-color: var(--secondary-color);
+    border: 1px solid black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    z-index: 2;
+    
+}
+.venta-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+}
 
 button {
     display: inline-block; 
@@ -68,4 +115,18 @@ button {
 
 button:hover {
     background-color: var(--secondary-color);
+}
+
+
+.detalle-producto{
+    /* display: flex; */
+    width: 70%;
+    margin-top: 50px;
+}
+
+.info-items{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
 }

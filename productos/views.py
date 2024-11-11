@@ -123,19 +123,6 @@ def listar_insumos(request):
     return render(request, 'insumos/lista_insumos.html', context)
 
 
-# def cargar_insumo(request):
-#     nuevo_insumo = None
-#     if request.method == 'POST':
-#         insumo_form = InsumoForm(request.POST)
-#         if insumo_form.is_valid():
-#             nuevo_insumo = insumo_form.save()
-#             messages.success(
-#                 request, 'Se ha guardado el insumo'
-#             )
-#             return redirect('productos:listar_insumos')
-#     else:
-#         insumo_form = InsumoForm()
-#     return render(request, 'productos/listar_insumos.html',{'form':insumo_form})
 
 def cargar_insumo(request):
     if request.method == "POST":
@@ -144,3 +131,37 @@ def cargar_insumo(request):
             form.save()
             return redirect('productos:listar_insumos')
         return JsonResponse({'success': False, 'errors': form.errors})
+    
+def detalle_insumo(request, id):
+    insumo = get_object_or_404(Insumo, id=id)
+    medidas = dict(Insumo.UNIDADES)
+    contexto = {
+        'insumo': insumo,
+        'medidas': medidas,
+    }
+    return render(request, 'insumos/detalle_insumo.html', contexto)
+
+def insumo_stock(request, id):
+    if request.method == 'POST':
+        insumo = get_object_or_404(Insumo, id=id)
+        stock_adicional = request.POST.get('stock_adicional', 0)
+        
+        try:
+            stock_adicional_decimal = Decimal(stock_adicional)
+            if stock_adicional_decimal <= 0:
+                return JsonResponse({'error': 'La cantidad debe ser mayor a 0'}, status=400)
+            
+            insumo.stock += stock_adicional_decimal
+            insumo.save()
+            
+            return redirect('productos:listar_insumos')
+        except ValueError:
+            return JsonResponse({'error': 'Valor de stock invalido'}, status=400)
+    return JsonResponse({'error':'metodo no permitido'}, status=405)
+
+def eliminar_insumo(request, id):
+    if request.method == 'POST':
+        insumo = get_object_or_404(Insumo, id=id)
+        insumo.delete()
+        
+    return redirect('productos:listar_insumos')

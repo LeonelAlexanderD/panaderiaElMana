@@ -26,7 +26,7 @@ class Comprobante(models.Model):
     tipo_de_venta = models.CharField(max_length=15, choices=TIPO_VENTA, verbose_name="Tipo de venta")
     forma_de_pago = models.CharField(max_length=15, choices=FORMA_DE_PAGO, verbose_name="Forma de pago")
     tipo_comprobante = models.CharField(max_length=30, choices=TIPO_COMPROBANTE)
-    total_comprobante = models.DecimalField(max_digits=10, decimal_places=2)
+    total_comprobante = models.DecimalField(max_digits=20, decimal_places=2)
     observacion = models.TextField(blank=True, null=True)
     
     def actualizarTotalComprobante(self):

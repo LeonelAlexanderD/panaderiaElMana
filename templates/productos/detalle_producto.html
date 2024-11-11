@@ -18,20 +18,18 @@ Proveedores Detalle - Panaderia El Maná
 
 
 <div class="container-details ">
+    <div class="boton-volver">
+        <a href="{% url 'productos:listar_productos' %}">
+            <button type="button">
+                << Volver</button>
+        </a>
+    </div>
     <div class="div-top">
-        <div class="boton-volver">
-            <a href="{% url 'productos:listar_productos' %}">
-                <button type="button">
-                    << Volver</button>
-            </a>
-        </div>
-        <!-- <div class="tittle-container">  -->
         <div class="tittle">
             <h1>Detalle de Producto</h1>
         </div>
-        <!-- </div> -->
     </div>
-    <section class="section-details">
+    <section class="section-details detalle-producto">
         <div class="info-box">
             <div class="info-row">
                 <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
@@ -65,12 +63,12 @@ Proveedores Detalle - Panaderia El Maná
                 <h4 class="info-label">Tipo:</h4>
                 <h4 class="info-value">{{ producto.tipo }}</h4>
             </div>
-            <div class="info-row">
-                <div>
+            <div class="botones-box">
+                <div class="botones-box">
                     <button onclick="modalAgregarStock()">Stock</button>
                     <button onclick="modalCambiarPRecio() ">Precio</button>
                 </div>
-                <div>
+                <div class="botones-box">
                     <button onclick="mostrarModalModificar()">Modificar</button>
                     <button onclick="mostrarModalEliminar()">Eliminar</button>
                 </div>
@@ -96,36 +94,31 @@ Proveedores Detalle - Panaderia El Maná
                 style="max-width: 200px; max-height: 200px;">
 
             <label for="nombre">Nombre: {{ producto.nombre }} </label>
-            <input type="text" name="nombre" id="nombre" maxlength="30"
-                value="{{ form.nombre.value|default_if_none:producto.nombre }}">
+            <input type="text" name="nombre" id="nombre" maxlength="30" value="" required>
 
             <label for="precio">Precio: {{ producto.precio }} </label>
             <input type="number" name="precio" id="precio"
-                value="{{ form.precio.value|default_if_none:producto.precio }}">
+                value="{{ form.precio.value|default_if_none:producto.precio }}" required>
 
             <label for="unidad_medida">Unidad de Medida: {{ producto.unidad_medida }} </label>
-            <select name="unidad_medida" id="unidad_medida"
-                value="{{ form.unidad_medida.value|default_if_none:producto.unidad_medida }}">
+            <select name="unidad_medida" id="unidad_medida" value="" required>
                 <option value="">----</option>
-                
+
             </select>
 
             <label for="descripcion">Descripcion: {{ producto.descripcion }} </label>
-            <textarea name="descripcion"
-                id="descripcion">{{ form.nombre.value|default_if_none:producto.descripcion }}</textarea>
+            <textarea name="descripcion" id="descripcion"></textarea>
 
             <label for="stock">Stock: {{ producto.stock }} </label>
-            <input type="number" name="stock" id="stock" value="{{ form.stock.value|default_if_none:producto.stock }}">
+            <input type="number" name="stock" id="stock" value="" required>
 
             <label for="categoria">Categoria: {{ producto.categoria }} </label>
-            <select name="categoria" id="categoria_select">
+            <select name="categoria" id="categoria_select" required>
                 <option value="">----</option>
-                
             </select>
 
             <label for="tipo">Tipo: {{ producto.tipo }} </label>
-            <input type="text" name="tipo" id="tipo" maxlength="30"
-                value="{{ form.tipo.value|default_if_none:producto.tipo }}">
+            <input type="text" name="subcategoria" id="subcategoria" maxlength="30" value="" required>
             <button type="submit">Guardar</button>
         </form>
     </div>
