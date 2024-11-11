@@ -15,6 +15,7 @@ from django.utils.dateparse import parse_date
 
 
 from productos.models import Insumo, Producto
+from usuarios.decorators import perfil_gerente_o_superior
 from usuarios.models import Empleado
 from ventas.forms import ClienteForm
 from ventas.models import CarritoProducto, Cliente_Mayorista, Comprobante, Venta
@@ -22,7 +23,7 @@ from ventas.models import CarritoProducto, Cliente_Mayorista, Comprobante, Venta
 # Create your views here.
 # 
 
-@login_required
+@login_required(login_url='usuarios:login')
 def nueva_venta(request):
     productos = Producto.objects.order_by('categoria', 'subcategoria')
     productos_dict = {}
@@ -54,7 +55,8 @@ def nueva_venta(request):
         'tipo_comprobante_choices': json.dumps(tipo_comprobante_choices),
         })
 
-@login_required
+
+@login_required(login_url='usuarios:login')
 def agregar_producto_carrito(request):
     if request.method == 'POST':
         producto_id = request.POST.get('producto_id')
@@ -65,7 +67,8 @@ def agregar_producto_carrito(request):
         # if 'comprobante_temp' not in request.session:
         #     crear_comprobante_temp(request)
         #inicialmente tengo la vista crear_comprobante_temp donde creo un comprobante temporal, pero 
-        #movi la logica hacia listar productos
+        #movi la logica hacia listar productos, tengo que crear nuevamente la vista para el comprobante
+        #temporal si veo que necesito manipular 
         
         comprobante_temp = request.session['comprobante_temp']
         item_existente = next((item for item in comprobante_temp['items'] if item['producto_id'] == producto.id), None)
@@ -89,7 +92,8 @@ def agregar_producto_carrito(request):
         request.session['comprobante_temp'] = comprobante_temp
         return redirect('ventas:nueva_venta') 
 
-@login_required
+
+@login_required(login_url='usuarios:login')
 def actualizar_o_eliminar_producto(request):
     if request.method == 'POST':
         producto_id = int(request.POST.get('producto_id'))
@@ -116,7 +120,7 @@ def actualizar_o_eliminar_producto(request):
         
 
 ##    
-@login_required
+@login_required(login_url='usuarios:login')
 def generar_comprobante(request):
     if request.method == 'POST':        
         tipo_venta = request.POST.get('tipo_de_venta')
@@ -162,7 +166,7 @@ def generar_comprobante(request):
 
 
 
-@login_required
+@login_required(login_url='usuarios:login')
 def ver_comprobante(request, comprobante_id):
     comprobante = Comprobante.objects.get(id=comprobante_id)
     items = comprobante.items.all()
@@ -178,7 +182,7 @@ def ver_comprobante(request, comprobante_id):
 
 
 
-@login_required
+@login_required(login_url='usuarios:login')
 def ver_detalles_venta(request, id):
     venta = get_object_or_404(Venta, id=id)
     empleado = venta.vendedor
@@ -191,13 +195,13 @@ def ver_detalles_venta(request, id):
     return render(request, 'venta/detalles_venta.html', contexto)
 
 
-@login_required
+@login_required(login_url='usuarios:login')
 def listar_ventas(request):
     ventas = Venta.objects.all()
     return render(request, 'venta/lista_ventas.html', {'ventas': ventas})
 
 
-@login_required
+@login_required(login_url='usuarios:login')
 def registrar_cliente(request):   
     if request.method == "POST":
         form = ClienteForm(request.POST)
@@ -208,7 +212,7 @@ def registrar_cliente(request):
         form = ClienteForm()
     return render(request, 'gestion/lista_clientes.html', {'form':form})
 
-@login_required
+@login_required(login_url='usuarios:login')
 def listar_clientes(request):        
     clientes = Cliente_Mayorista.objects.all()
     form = ClienteForm()
@@ -217,14 +221,14 @@ def listar_clientes(request):
 
 
 
-
-#informes
-@login_required
+#########################################################
+####    informes
+@perfil_gerente_o_superior
 def informes(request):
     return render(request,'gestion/informes.html')
 
 #productos tabla
-@login_required
+@perfil_gerente_o_superior
 def productos_mas_vendidos(request):
     productos_venta = (
         Venta.objects
@@ -237,7 +241,7 @@ def productos_mas_vendidos(request):
 
 
 ## csv
-@login_required
+@perfil_gerente_o_superior
 def exportar_csv(request):
     productos_venta = (
         Venta.objects
@@ -258,7 +262,7 @@ def exportar_csv(request):
     return response
 
 ##excel
-@login_required
+@perfil_gerente_o_superior
 def exportar_excel(request):
     productos_venta = (
         Venta.objects
@@ -283,7 +287,7 @@ def exportar_excel(request):
     return response
 
 ##pdf
-@login_required
+@perfil_gerente_o_superior
 def exportar_pdf(request):
     productos_venta = (
         Venta.objects
@@ -308,14 +312,14 @@ def exportar_pdf(request):
 
 
 ##materia prima
-@login_required
+@perfil_gerente_o_superior
 def insumos_faltantes(request):
     insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
     return render(request, 'gestion/lista_insumos_faltantes.html',{'insumos':insumos_bajo_stock})
 
 
 #pdf
-@login_required
+@perfil_gerente_o_superior
 def exportar_materia_faltante_pdf(request):
     insumos = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
 
@@ -333,7 +337,7 @@ def exportar_materia_faltante_pdf(request):
     return response
 
 #csv
-@login_required
+@perfil_gerente_o_superior
 def exportar_materia_faltante_csv(request):
     insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
 
@@ -349,7 +353,7 @@ def exportar_materia_faltante_csv(request):
     return response
 
 #excel xlsx
-@login_required
+@perfil_gerente_o_superior
 def exportar_materia_faltante_xlsx(request):
     insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
 
@@ -371,7 +375,7 @@ def exportar_materia_faltante_xlsx(request):
 
 
 ## ventas reporte
-@login_required
+@perfil_gerente_o_superior
 def reporte_ventas(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
@@ -392,6 +396,7 @@ def reporte_ventas(request):
 
 
 #pdf
+@perfil_gerente_o_superior
 def exportar_ventas_pdf(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
@@ -415,6 +420,7 @@ def exportar_ventas_pdf(request):
 
 
 #csv
+@perfil_gerente_o_superior
 def exportar_ventas_csv(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
@@ -438,6 +444,7 @@ def exportar_ventas_csv(request):
     return response
 
 #xlsx
+@perfil_gerente_o_superior
 def exportar_ventas_xlsx(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')

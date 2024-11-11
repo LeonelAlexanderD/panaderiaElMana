@@ -142,52 +142,7 @@ Insumos - Panaderia El Maná
         
             <button type="submit">Guardar Recepción</button>
         </form>
-        <!-- <form id="register-product-form" method="post" action="{% url 'proveedores:recepcion_pedido' pedido.id %}">
-            {% csrf_token %}
-            <label>Pedido N°: {{ pedido.id }} </label>
-
-            <label>Empleado Receptor: {{ empleado.nombre}} </label>
-
-            <label>Fecha de Recepcion: {{ recepcion.fecha }} </label>
-
-
-
-            <label> Items pedidos: </label>
-            {% if items %}
-            {% for item in items %}
-            <ul>
-                <strong>Insumo:</strong> {{ item.insumo.nombre }}<br>
-                <strong>Marca:</strong> {{ item.insumo.marca }}<br>
-                <strong>Cantidad:</strong> {{ item.cantidad }}<br>
-            </ul>
-            {% empty %}
-            <strong>No hay insumos pedidos</strong>
-            {% endfor %}
-            {% endif %}
-
-            <label> Items recibidos:</label>
-            {% if items %}
-            {% for item in items %}
-            <label for="cantidad_recibida_{{ item.id }}">Cantidad de {{ item.insumo.nombre }} recibida:</label>
-            <input type="number" name="cantidad_recibida_{{ item.id }}" min="0" required>
-
-            <label for="precio_unitario_{{ item.id }}">Precio Unitario:</label>
-            <input type="number" name="precio_unitario_{{ item.id }}" step="0.01" required>
-
-            <strong>Precio total: </strong>
-            <input type="number" name="precio_total_{{ item.id }}" step="0.01" required>       
-            {% endfor %}
-            {% endif %}
-            <label for="conformidad">Conformidad:</label>
-            <textarea name="conformidad" id="conformidad"></textarea>
-
-            <label for="observacion">Observacion:</label>
-            <textarea name="observacion" id="observacion"></textarea>
-            <label for="subcategoria">subcategoria:</label>
-            <input type="text" name="subcategoria" id="subcategoria" maxlength="30" required>
-
-            <button type="submit">Guardar</button>
-        </form> -->
+        
     </div>
 </div>
 

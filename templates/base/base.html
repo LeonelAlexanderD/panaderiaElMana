@@ -25,7 +25,7 @@
         <nav class="nav-menu">
             <ul >
                 {% if user.is_authenticated %}
-                <h2 class="usuario">{{user.username}}</h2>
+                <h2 class="usuario">{{user.username}} - {{ user.empleado.nombre}} </h2>
                 
                 <li><a href="{% url 'usuarios:logout' %}"> Cerrar Sesion</a></li>
                 <li><a href="{% url 'gestion' %}" id="management-btn">Gestion</a></li>

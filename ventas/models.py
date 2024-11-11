@@ -66,5 +66,5 @@ class Venta(models.Model):
 
 class Cliente_Mayorista(models.Model):
     razon_social = models.CharField(max_length=30)
-    cuit = models.PositiveSmallIntegerField()
-    telefono = models.PositiveSmallIntegerField()
+    cuit = models.PositiveIntegerField()
+    telefono = models.PositiveIntegerField()

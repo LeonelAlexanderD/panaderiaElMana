@@ -168,3 +168,15 @@ button:hover {
     max-width: 40%;
 
 }
+
+.pendiente{
+    color: orange;
+}
+
+.recibido{
+    color: green;
+}
+
+.cancelado{
+    color:red;
+}

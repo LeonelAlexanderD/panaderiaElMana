@@ -2,6 +2,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 
+from usuarios.models import Empleado
+
 
 # Create your views here.
 
@@ -21,3 +23,4 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('inicio')
+

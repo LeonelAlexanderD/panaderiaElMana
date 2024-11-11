@@ -20,6 +20,7 @@ Productos - Panaderia El Maná
     <table id="producto-table">
         <thead>
             <tr>
+                <th>N° de Pedido</th>
                 <th>Proveedor</th>
                 <th>Fecha</th>
                 <th>Estado</th>
@@ -30,9 +31,18 @@ Productos - Panaderia El Maná
             {% if pedidos %}
             {% for pedido in pedidos %}
             <tr>
+                <td>{{ pedido.id }} </td>
                 <td>{{ pedido.proveedor.razon_social }} </td>
                 <td>{{ pedido.fecha_pedido }} </td>
-                <td>{{ pedido.estado }} </td>
+                <td>
+                    {% if pedido.estado == 'Pendiente' %}
+                        <strong class="pendiente">{{ pedido.estado }} </strong>
+                    {% elif pedido.estado == 'Cancelado' %}
+                        <strong class="cancelado">{{ pedido.estado }} </strong>
+                    {% else %}
+                        <strong class="recibido">{{ pedido.estado }} </strong>
+                    {% endif %}
+                </td>
                 <td>
 
                     <a href="{% url 'proveedores:detalle_pedido' pedido.id %}">

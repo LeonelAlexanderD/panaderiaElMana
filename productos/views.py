@@ -3,9 +3,11 @@ import json
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 # from django.core.serializers.json import DjangoJSONEncoder
 from productos.forms import InsumoForm, ProductoForm
 from productos.models import Insumo, Producto
+from usuarios.decorators import perfil_administrador, perfil_gerente_o_superior
 
 # Create your views here.
 
@@ -13,11 +15,13 @@ from productos.models import Insumo, Producto
 def pagina_principal(request):
     return render(request, 'index.html')
 
+@login_required(login_url='usuarios:login')
 def pagina_gestion(request):
     return render(request, 'gestion/gestion.html')
 
 
 ## productos
+@login_required(login_url='usuarios:login')
 def listar_productos(request):
     productos = Producto.objects.all()
     medidas = dict(Producto.UNIDADES)
@@ -31,7 +35,7 @@ def listar_productos(request):
     return render(request, 'productos/lista_productos.html', context)
 
 
-
+@perfil_gerente_o_superior
 def registrar_producto(request):
     if request.method == "POST":
         form = ProductoForm(request.POST, request.FILES)
@@ -40,7 +44,8 @@ def registrar_producto(request):
             return redirect('productos:listar_productos')
         return JsonResponse({'success': False, 'errors': form.errors})
     
-    
+
+@login_required(login_url='usuarios:login')
 def detalle_producto(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     medidas = dict(Producto.UNIDADES)
@@ -52,6 +57,7 @@ def detalle_producto(request, pk):
     }
     return render(request,'productos/detalle_producto.html', context)
 
+@perfil_gerente_o_superior
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     if request.method == 'POST':
@@ -64,6 +70,8 @@ def editar_producto(request, pk):
     
     return render(request, 'productos/detalle_producto.html', {'form': form, 'producto': producto})
 
+
+@perfil_administrador
 def eliminar_producto(request, pk):
     if request.method == 'POST':
         producto = get_object_or_404(Producto, pk=pk)
@@ -71,6 +79,8 @@ def eliminar_producto(request, pk):
         
     return redirect('productos:listar_productos')
 
+
+@perfil_gerente_o_superior
 def agregar_stock(request, pk):
     if request.method == 'POST':
         producto = get_object_or_404(Producto, pk=pk)
@@ -89,6 +99,8 @@ def agregar_stock(request, pk):
             return JsonResponse({'error': 'Valor de stock invalido'}, status=400)
     return JsonResponse({'error':'metodo no permitido'}, status=405)
     
+
+@perfil_gerente_o_superior
 def cambiar_precio(request, pk):
     if request.method == 'POST':
         producto = get_object_or_404(Producto, pk=pk)
@@ -110,7 +122,7 @@ def cambiar_precio(request, pk):
 
 
 ## INSUMOS
-#
+@login_required(login_url='usuarios:login')
 def listar_insumos(request):
     insumos = Insumo.objects.all()
     unidades_choices = dict(Insumo.UNIDADES)
@@ -123,7 +135,7 @@ def listar_insumos(request):
     return render(request, 'insumos/lista_insumos.html', context)
 
 
-
+@perfil_gerente_o_superior
 def cargar_insumo(request):
     if request.method == "POST":
         form = InsumoForm(request.POST)
@@ -131,7 +143,9 @@ def cargar_insumo(request):
             form.save()
             return redirect('productos:listar_insumos')
         return JsonResponse({'success': False, 'errors': form.errors})
-    
+
+
+@login_required(login_url='usuarios:login')
 def detalle_insumo(request, id):
     insumo = get_object_or_404(Insumo, id=id)
     medidas = dict(Insumo.UNIDADES)
@@ -141,6 +155,8 @@ def detalle_insumo(request, id):
     }
     return render(request, 'insumos/detalle_insumo.html', contexto)
 
+
+@perfil_gerente_o_superior
 def insumo_stock(request, id):
     if request.method == 'POST':
         insumo = get_object_or_404(Insumo, id=id)
@@ -159,6 +175,8 @@ def insumo_stock(request, id):
             return JsonResponse({'error': 'Valor de stock invalido'}, status=400)
     return JsonResponse({'error':'metodo no permitido'}, status=405)
 
+
+@perfil_administrador
 def eliminar_insumo(request, id):
     if request.method == 'POST':
         insumo = get_object_or_404(Insumo, id=id)
