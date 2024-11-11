@@ -25,4 +25,10 @@ urlpatterns = [
     path('exportar_materia_faltante_pdf', views.exportar_materia_faltante_pdf, name='exportar_materia_faltante_pdf'),
     path('exportar_materia_faltante_csv', views.exportar_materia_faltante_csv, name='exportar_materia_faltante_csv'),
     path('exportar_materia_faltante_xlsx', views.exportar_materia_faltante_xlsx, name='exportar_materia_faltante_xlsx'),
+
+    path('reporte_ventas', views.reporte_ventas, name='reporte_ventas'),
+    path('exportar_ventas_csv', views.exportar_ventas_csv, name='exportar_ventas_csv'),
+    path('exportar_ventas_pdf', views.exportar_ventas_pdf, name='exportar_ventas_pdf'),
+    path('exportar_ventas_xlsx', views.exportar_ventas_xlsx, name='exportar_ventas_xlsx'),
+
 ]

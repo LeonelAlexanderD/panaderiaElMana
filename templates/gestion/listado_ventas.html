@@ -1,0 +1,61 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Proveedores - Panaderia El Maná
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="container">
+    
+    <div class="container-form">
+    <form method="get" action="{% url 'ventas:reporte_ventas' %}">
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}">
+        <label for="fecha_fin">Fecha Fin:</label>
+        <input type="date" name="fecha_fin" value="{{ fecha_fin }}">
+        <button type="submit">Filtrar</button>
+    </form>
+    </div>
+    <div class="container">
+        <h1>Listado de Ventas</h1>
+        <a href="{% url 'ventas:exportar_ventas_csv' %}?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}">
+            <button>Exportar a CSV</button>
+        </a>
+        <a href="{% url 'ventas:exportar_ventas_xlsx' %}?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}">
+            <button>Exportar a Excel</button>
+        </a>
+        <a href="{% url 'ventas:exportar_ventas_pdf' %}?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}">
+            <button>Exportar a PDF</button>
+        </a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Vendedor</th>
+                    <th>Total de la Venta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                    <tr>
+                        <td>{{ venta.fecha }}</td>
+                        <td>{{ venta.vendedor.nombre }} {{ venta.vendedor.apellido }}</td>
+                        <td>{{ venta.comprobante.total_comprobante }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    
+</div>
+
+
+
+{% endblock content %}

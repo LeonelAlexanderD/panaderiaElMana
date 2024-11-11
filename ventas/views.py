@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 from decimal import Decimal
 import json
 from django.http import HttpResponse, JsonResponse
@@ -10,7 +11,7 @@ import openpyxl
 from xhtml2pdf import pisa
 from django.template.loader import render_to_string
 from django.db.models import F
-
+from django.utils.dateparse import parse_date
 
 
 from productos.models import Insumo, Producto
@@ -70,11 +71,11 @@ def agregar_producto_carrito(request):
         item_existente = next((item for item in comprobante_temp['items'] if item['producto_id'] == producto.id), None)
         
         if item_existente:
-            # Si el producto ya está en el carrito, actualiza la cantidad
+            # # Si el producto ya está en el carrito, actualiza la cantidad
             item_existente['cantidad'] += float(cantidad)
             item_existente['subtotal'] = item_existente['cantidad'] * float(producto.precio)
         else:
-            # Si no está en el carrito, agregarlo como nuevo
+            ## Si no está en el carrito, agregarlo como nuevo
             subtotal = producto.precio * cantidad
             comprobante_temp['items'].append({
                 'imagen': producto.imagen.url,
@@ -85,7 +86,6 @@ def agregar_producto_carrito(request):
                 'subtotal': float(subtotal)
             })
         
-        # Actualizar la sesión
         request.session['comprobante_temp'] = comprobante_temp
         return redirect('ventas:nueva_venta') 
 
@@ -226,7 +226,6 @@ def informes(request):
 #productos tabla
 @login_required
 def productos_mas_vendidos(request):
-    # Recuperar los productos más vendidos y calcular la cantidad total vendida
     productos_venta = (
         Venta.objects
         .values('comprobante__items__producto__nombre')
@@ -286,7 +285,6 @@ def exportar_excel(request):
 ##pdf
 @login_required
 def exportar_pdf(request):
-    # Recuperar los productos más vendidos
     productos_venta = (
         Venta.objects
         .values('comprobante__items__producto__nombre')
@@ -294,22 +292,17 @@ def exportar_pdf(request):
         .order_by('-total_vendido')
     )
 
-    # Renderizar el HTML para el PDF usando el template correcto
     context = {'productos_venta': productos_venta}
     html = render_to_string('gestion/productos_mas_vendidos.html', context)
 
-    # Crear la respuesta HTTP con el tipo de contenido 'application/pdf'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="productos_mas_vendidos.pdf"'
 
-    # Convertir el HTML a PDF usando xhtml2pdf
     pisa_status = pisa.CreatePDF(html, dest=response)
 
-    # Si ocurre un error durante la conversión, devolver un mensaje de error
     if pisa_status.err:
         return HttpResponse('Error generando el PDF', status=500)
 
-    # Si todo está bien, devolver el archivo PDF generado
     return response
 
 
@@ -324,43 +317,32 @@ def insumos_faltantes(request):
 #pdf
 @login_required
 def exportar_materia_faltante_pdf(request):
-    # Obtener insumos cuyo stock es menor o igual al punto de pedido
     insumos = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
 
-    # Renderizar el HTML para el PDF
     context = {'insumos': insumos}
     html = render_to_string('gestion/lista_insumos_faltantes.html', context)
 
-    # Crear la respuesta HTTP con el tipo de contenido 'application/pdf'
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="lista_insumos_faltantes.pdf"'
 
-    # Convertir el HTML a PDF usando xhtml2pdf
     pisa_status = pisa.CreatePDF(html, dest=response)
 
-    # Si ocurre un error durante la conversión, devolver un mensaje de error
     if pisa_status.err:
         return HttpResponse('Error generando el PDF', status=500)
 
-    # Si todo está bien, devolver el archivo PDF generado
     return response
 
 #csv
 @login_required
 def exportar_materia_faltante_csv(request):
-    # Obtener insumos cuyo stock es menor o igual al punto de pedido
     insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
 
-    # Crear la respuesta HTTP con el tipo de contenido 'text/csv'
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="materia_prima_faltante.csv"'
 
-    # Crear el objeto writer de CSV
     writer = csv.writer(response)
-    # Escribir el encabezado
     writer.writerow(['Insumo', 'Stock Actual', 'Punto de Pedido'])
 
-    # Escribir los datos de los insumos faltantes
     for insumo in insumos_bajo_stock:
         writer.writerow([insumo.nombre, insumo.stock, insumo.punto_de_pedido])
 
@@ -369,26 +351,117 @@ def exportar_materia_faltante_csv(request):
 #excel xlsx
 @login_required
 def exportar_materia_faltante_xlsx(request):
-    # Obtener insumos cuyo stock es menor o igual al punto de pedido
     insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
 
-    # Crear un libro de trabajo de Excel
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Materia Prima Faltante'
-
-    # Escribir el encabezado en la hoja de Excel
     ws.append(['Insumo', 'Stock Actual', 'Punto de Pedido'])
 
-    # Escribir los datos de los insumos faltantes
     for insumo in insumos_bajo_stock:
         ws.append([insumo.nombre, insumo.stock, insumo.punto_de_pedido])
 
-    # Crear la respuesta HTTP con el tipo de contenido 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="materia_prima_faltante.xlsx"'
 
-    # Guardar el libro de trabajo en el objeto response
     wb.save(response)
 
+    return response
+
+
+
+## ventas reporte
+@login_required
+def reporte_ventas(request):
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    ventas = Venta.objects.all()
+    
+    if fecha_inicio and fecha_fin:
+        ventas = ventas.filter(
+            fecha__range=[parse_date(fecha_inicio), parse_date(fecha_fin)]
+        )
+
+    context = {
+        'ventas': ventas,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+    }
+    return render(request, 'gestion/listado_ventas.html', context)
+
+
+#pdf
+def exportar_ventas_pdf(request):
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    ventas = Venta.objects.all()
+    if fecha_inicio and fecha_fin:
+        ventas = ventas.filter(
+            fecha__range=[parse_date(fecha_inicio), parse_date(fecha_fin)]
+        )
+
+    context = {'ventas': ventas}
+    html = render_to_string('gestion/listado_ventas.html', context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="listado_ventas.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error al generar PDF', status=500)
+    
+    return response
+
+
+#csv
+def exportar_ventas_csv(request):
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    ventas = Venta.objects.all()
+    if fecha_inicio and fecha_fin:
+        ventas = ventas.filter(
+            fecha__range=[parse_date(fecha_inicio), parse_date(fecha_fin)]
+        )
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="listado_ventas.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Fecha', 'Vendedor', 'Total de la Venta'])
+
+    for venta in ventas:
+        fecha_formateada = venta.fecha.strftime('%Y-%m-%d')
+        writer.writerow([fecha_formateada, f"{venta.vendedor.nombre} {venta.vendedor.apellido}", venta.comprobante.total_comprobante])
+
+    return response
+
+#xlsx
+def exportar_ventas_xlsx(request):
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    if fecha_inicio and fecha_fin:
+        fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d')
+
+        ventas = Venta.objects.filter(fecha__range=[fecha_inicio, fecha_fin]).select_related('vendedor')
+    else:
+        ventas = Venta.objects.all().select_related('vendedor')
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Ventas"
+
+    ws.append(['Fecha', 'Vendedor', 'Total de la Venta'])
+
+    for venta in ventas:
+        vendedor_nombre = f"{venta.vendedor.nombre} {venta.vendedor.apellido}"
+        ws.append([venta.fecha.strftime('%Y-%m-%d'), vendedor_nombre, venta.comprobante.total_comprobante])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="ventas.xlsx"'
+
+    wb.save(response)
     return response
