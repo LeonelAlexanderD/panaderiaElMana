@@ -10,7 +10,7 @@ from proveedores.models import Item_Pedido, Item_Recepcion, Pedido, Proveedor, R
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 
-from usuarios.decorators import perfil_administrador, perfil_gerente_o_superior
+from usuarios.decorators import perfil_gerente_o_superior
 from usuarios.models import Empleado
 
 # Create your views here.

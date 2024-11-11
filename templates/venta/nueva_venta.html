@@ -16,7 +16,7 @@ Nueva Venta - Panaderia El Maná
             <a href="#">Categorías</a>
             <ul class="dropdown">
                 {% for categoria in productos.keys %}
-                <li><a href="#{{ categoria|slugify }}">{{ categoria }}</a></li>
+                <li><a href="#{{ categoria }}">{{ categoria }}</a></li>
                 {% endfor %}
             </ul>
         </li>
@@ -29,7 +29,7 @@ Nueva Venta - Panaderia El Maná
             <ul class="dropdown">
                 {% for categoria, subcategorias in productos.items %}
                 {% for subcategoria in subcategorias.keys %}
-                <li><a href="#{{ categoria|slugify }}-{{ subcategoria|slugify }}">{{ subcategoria }}</a></li>
+                <li><a href="#{{ subcategoria }}">{{ subcategoria }}</a></li>
                 {% endfor %}
                 {% endfor %}
             </ul>
@@ -113,17 +113,7 @@ Nueva Venta - Panaderia El Maná
                 <input type="hidden" name="accion" value="eliminar">
                 <button type="submit" class="remove-item">Eliminar</button>
             </form>
-            <!-- <form method="post" action="{% url 'ventas:actualizar_o_eliminar_producto' %}">
-                {% csrf_token %}
-                <input type="hidden" name="producto_id" value="{{ item.producto_id }}">
-                <input type="hidden" name="accion" value="actualizar">
-                <label>Cantidad: </label>
-                <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" onchange="this.form.submit()">
-                <h4>Subtotal: ${{ item.subtotal }}</h4>
-                <input type="hidden" name="accion" value="eliminar">
-                <button type="submit" class="remove-item">Eliminar</button>
             
-            </form> -->
         </div>
         {% endfor %}
     </div>

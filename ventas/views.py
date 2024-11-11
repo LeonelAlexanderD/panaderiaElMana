@@ -32,7 +32,8 @@ def nueva_venta(request):
             productos_dict[producto.categoria] = {}
         if producto.subcategoria not in productos_dict[producto.categoria]:
             productos_dict[producto.categoria][producto.subcategoria] = []
-        productos_dict[producto.categoria][producto.subcategoria].append(producto)
+        if producto.stock >0:
+            productos_dict[producto.categoria][producto.subcategoria].append(producto)
     
     tipo_venta_choices = dict(Comprobante.TIPO_VENTA)
     forma_pago_choices = dict(Comprobante.FORMA_DE_PAGO)
