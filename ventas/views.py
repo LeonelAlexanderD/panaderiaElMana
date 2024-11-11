@@ -1,13 +1,19 @@
+import csv
 from decimal import Decimal
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+import openpyxl
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
+from django.db.models import F
 
 
 
-from productos.models import Producto
+from productos.models import Insumo, Producto
 from usuarios.models import Empleado
 from ventas.forms import ClienteForm
 from ventas.models import CarritoProducto, Cliente_Mayorista, Comprobante, Venta
@@ -208,3 +214,181 @@ def listar_clientes(request):
     form = ClienteForm()
     print(clientes)
     return render(request,'gestion/lista_clientes.html', {'clientes': clientes, 'form':form})
+
+
+
+
+#informes
+@login_required
+def informes(request):
+    return render(request,'gestion/informes.html')
+
+#productos tabla
+@login_required
+def productos_mas_vendidos(request):
+    # Recuperar los productos más vendidos y calcular la cantidad total vendida
+    productos_venta = (
+        Venta.objects
+        .values('comprobante__items__producto__nombre')
+        .annotate(total_vendido=Sum('comprobante__items__cantidad'))
+        .order_by('-total_vendido')
+    )
+    
+    return render(request, 'gestion/productos_mas_vendidos.html', {'productos_venta': productos_venta})
+
+
+## csv
+@login_required
+def exportar_csv(request):
+    productos_venta = (
+        Venta.objects
+        .values('comprobante__items__producto__nombre')
+        .annotate(total_vendido=Sum('comprobante__items__cantidad'))
+        .order_by('-total_vendido')
+    )
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="productos_mas_vendidos.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Producto', 'Cantidad Vendida'])
+
+    for producto in productos_venta:
+        writer.writerow([producto['comprobante__items__producto__nombre'], producto['total_vendido']])
+
+    return response
+
+##excel
+@login_required
+def exportar_excel(request):
+    productos_venta = (
+        Venta.objects
+        .values('comprobante__items__producto__nombre')
+        .annotate(total_vendido=Sum('comprobante__items__cantidad'))
+        .order_by('-total_vendido')
+    )
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Productos Más Vendidos"
+
+    ws.append(['Producto', 'Cantidad Vendida'])
+
+    for producto in productos_venta:
+        ws.append([producto['comprobante__items__producto__nombre'], producto['total_vendido']])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="productos_mas_vendidos.xlsx"'
+
+    wb.save(response)
+    return response
+
+##pdf
+@login_required
+def exportar_pdf(request):
+    # Recuperar los productos más vendidos
+    productos_venta = (
+        Venta.objects
+        .values('comprobante__items__producto__nombre')
+        .annotate(total_vendido=Sum('comprobante__items__cantidad'))
+        .order_by('-total_vendido')
+    )
+
+    # Renderizar el HTML para el PDF usando el template correcto
+    context = {'productos_venta': productos_venta}
+    html = render_to_string('gestion/productos_mas_vendidos.html', context)
+
+    # Crear la respuesta HTTP con el tipo de contenido 'application/pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="productos_mas_vendidos.pdf"'
+
+    # Convertir el HTML a PDF usando xhtml2pdf
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Si ocurre un error durante la conversión, devolver un mensaje de error
+    if pisa_status.err:
+        return HttpResponse('Error generando el PDF', status=500)
+
+    # Si todo está bien, devolver el archivo PDF generado
+    return response
+
+
+
+##materia prima
+@login_required
+def insumos_faltantes(request):
+    insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
+    return render(request, 'gestion/lista_insumos_faltantes.html',{'insumos':insumos_bajo_stock})
+
+
+#pdf
+@login_required
+def exportar_materia_faltante_pdf(request):
+    # Obtener insumos cuyo stock es menor o igual al punto de pedido
+    insumos = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
+
+    # Renderizar el HTML para el PDF
+    context = {'insumos': insumos}
+    html = render_to_string('gestion/lista_insumos_faltantes.html', context)
+
+    # Crear la respuesta HTTP con el tipo de contenido 'application/pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="lista_insumos_faltantes.pdf"'
+
+    # Convertir el HTML a PDF usando xhtml2pdf
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Si ocurre un error durante la conversión, devolver un mensaje de error
+    if pisa_status.err:
+        return HttpResponse('Error generando el PDF', status=500)
+
+    # Si todo está bien, devolver el archivo PDF generado
+    return response
+
+#csv
+@login_required
+def exportar_materia_faltante_csv(request):
+    # Obtener insumos cuyo stock es menor o igual al punto de pedido
+    insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
+
+    # Crear la respuesta HTTP con el tipo de contenido 'text/csv'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="materia_prima_faltante.csv"'
+
+    # Crear el objeto writer de CSV
+    writer = csv.writer(response)
+    # Escribir el encabezado
+    writer.writerow(['Insumo', 'Stock Actual', 'Punto de Pedido'])
+
+    # Escribir los datos de los insumos faltantes
+    for insumo in insumos_bajo_stock:
+        writer.writerow([insumo.nombre, insumo.stock, insumo.punto_de_pedido])
+
+    return response
+
+#excel xlsx
+@login_required
+def exportar_materia_faltante_xlsx(request):
+    # Obtener insumos cuyo stock es menor o igual al punto de pedido
+    insumos_bajo_stock = Insumo.objects.filter(stock__lte=F('punto_de_pedido'))
+
+    # Crear un libro de trabajo de Excel
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Materia Prima Faltante'
+
+    # Escribir el encabezado en la hoja de Excel
+    ws.append(['Insumo', 'Stock Actual', 'Punto de Pedido'])
+
+    # Escribir los datos de los insumos faltantes
+    for insumo in insumos_bajo_stock:
+        ws.append([insumo.nombre, insumo.stock, insumo.punto_de_pedido])
+
+    # Crear la respuesta HTTP con el tipo de contenido 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="materia_prima_faltante.xlsx"'
+
+    # Guardar el libro de trabajo en el objeto response
+    wb.save(response)
+
+    return response

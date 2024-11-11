@@ -14,4 +14,15 @@ urlpatterns = [
     
     path('listar_clientes/', views.listar_clientes, name='listar_clientes'),
     path('registrar_cliente', views.registrar_cliente, name='registrar_cliente'),
+    
+    path('informes', views.informes, name='informes'),
+    path('productos_mas_vendidos', views.productos_mas_vendidos, name='productos_mas_vendidos'),
+    path('exportar_csv', views.exportar_csv, name='exportar_csv'),
+    path('exportar_excel', views.exportar_excel, name='exportar_excel'),
+    path('exportar_pdf', views.exportar_pdf, name='exportar_pdf'),
+    
+    path('insumos_faltantes', views.insumos_faltantes, name='insumos_faltantes'),
+    path('exportar_materia_faltante_pdf', views.exportar_materia_faltante_pdf, name='exportar_materia_faltante_pdf'),
+    path('exportar_materia_faltante_csv', views.exportar_materia_faltante_csv, name='exportar_materia_faltante_csv'),
+    path('exportar_materia_faltante_xlsx', views.exportar_materia_faltante_xlsx, name='exportar_materia_faltante_xlsx'),
 ]

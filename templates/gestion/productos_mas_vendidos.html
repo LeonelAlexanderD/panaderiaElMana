@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Proveedores - Panaderia El Maná
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Productos Más Vendidos</h1>
+    <a href="{% url 'ventas:exportar_csv' %}">
+        <button>Exportar a CSV</button>
+    </a>
+    <a href="{% url 'ventas:exportar_excel' %}">
+        <button>Exportar a Excel</button>
+    </a>
+    <a href="{% url 'ventas:exportar_pdf' %}">
+        <button>Exportar a PDF</button>
+    </a>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad Vendida</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos_venta %}
+                <tr>
+                    <td>{{ producto.comprobante__items__producto__nombre }}</td>
+                    <td>{{ producto.total_vendido }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+</div>
+
+
+
+{% endblock content %}

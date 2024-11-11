@@ -1,0 +1,50 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+Proveedores - Panaderia El Maná
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'styles/lista_tabla.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="container">
+    <h1> Materia Prima Faltante </h1>
+    <a href="{% url 'ventas:exportar_materia_faltante_csv' %}">
+        <button>Exportar a CSV</button>
+    </a>
+    <a href="{% url 'ventas:exportar_materia_faltante_xlsx' %}">
+        <button>Exportar a Excel</button>
+    </a>
+    <a href="{% url 'ventas:exportar_materia_faltante_pdf' %}">
+        <button>Exportar a PDF</button>
+    </a>
+    <table>
+        <thead>
+            <tr>
+                <th>Insumo</th>
+                <th>Stock Actual</th>
+                <th>Punto de Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for insumo in insumos %}
+                <tr>
+                    <td>{{ insumo.nombre }}</td>
+                    <td>{{ insumo.stock }}</td>
+                    <td>{{ insumo.punto_de_pedido }}</td>
+                </tr>
+                
+            {% endfor %}            
+        </tbody>
+    </table>
+
+    
+</div>
+
+
+
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+    Gestion - Panaderia El Maná
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'styles/gestion.css' %}">
+{% endblock style %}
+    {% block content %}
+
+
+
+    
+    <div class="container">
+        <h1>Gestion</h1>
+        <div class="card-grid">            
+            
+            <a href="{% url 'ventas:productos_mas_vendidos' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Productos mas Vendidos</h2>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'ventas:insumos_faltantes' %}">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Insumos Faltantes</h2>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="">
+                <div class="card">
+                    <img src="" alt="" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title"> En Proceso</h2>
+                    </div>
+                </div>
+            </a>            
+        </div>
+    </div>
+
+
+    {% endblock content %}
+    
