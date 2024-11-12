@@ -39,51 +39,6 @@ function cerrarComprobanteModal() {
     document.getElementById('payment-modal').style.display = 'none'; 
 }
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     const jsonTipoVenta = document.getElementById('tipo_venta_choices').textContent;
-//     const tipoVentasChoices = JSON.parse(jsonTipoVenta);
-//     const selectTipoVenta = document.getElementById('sale-type');
-    
-//     selectTipoVenta.innerHTML = '';
-
-//     for (let key in tipoVentasChoices) {
-//         if (tipoVentasChoices.hasOwnProperty(key)) {
-//             let option = document.createElement('option');
-//             option.value = key;
-//             option.textContent = tipoVentasChoices[key];
-//             selectTipoVenta.appendChild(option);
-//         }
-//     }
-
-
-//     const jsonTipoPago = document.getElementById('forma_pago_choices').textContent;
-//     const tipoPagoChoices = JSON.parse(jsonTipoPago);
-//     const selectTipoPago = document.getElementById('payment-method');
-//     selectTipoPago.innerHTML = '';
-
-//     for (let key in tipoPagoChoices) {
-//         if(tipoPagoChoices.hasOwnProperty(key)){
-//             let option = document.createElement('option');
-//             option.value = key;
-//             option.textContent = tipoPagoChoices[key];
-//             selectTipoPago.appendChild(option);
-//         }
-//     }
-
-//     const jsonTipoComprobante = document.getElementById('tipo_comprobante_choices').textContent;
-//     const tipoComprobanteChoices = JSON.parse(jsonTipoComprobante);
-//     const selectTipoComprobante = document.getElementById('receipt-type');
-//     selectTipoComprobante.innerHTML = '';
-
-//     for (let key in tipoComprobanteChoices) {
-//         if(tipoComprobanteChoices.hasOwnProperty(key)){
-//             let option = document.createElement('option');
-//             option.value = key;
-//             option.textContent = tipoComprobanteChoices[key];
-//             selectTipoComprobante.appendChild(option);
-//         }
-//     }
-// });
 
 
 //Funcion de arriba pero reformulada con gpt- funciona, no tocar-
@@ -140,55 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// carrito
-// function adjustQuantity(button, change) {
-//     // Obtener el contenedor principal del producto en el carrito
-//     const cartItemDiv = button.closest(".cart-item-div");
 
-//     // Obtener el input de cantidad y su valor actual
-//     const quantityInput = cartItemDiv.querySelector(".quantity-input");
-//     let currentQuantity = parseInt(quantityInput.value);
-//     const newQuantity = currentQuantity + change;
+function mostrarTotalCarrito() {
+    let total = 0;
 
-//     // Calcular la nueva cantidad y ajustar si está dentro del rango permitido
-//     if (newQuantity >= 1) {
-//         quantityInput.value = newQuantity;
+    // Sumamos cada subtotal de los productos en el carrito
+    document.querySelectorAll('.subtotal-value').forEach(subtotalElement => {
+        total += parseFloat(subtotalElement.textContent);
+    });
 
-//         // Actualizar el subtotal
-//         const price = parseFloat(cartItemDiv.querySelector(".subtotal-value").dataset.price); 
-//         const subtotal = newQuantity * price;
-//         cartItemDiv.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
+    // Mostramos el total en el carrito
+    document.getElementById('cart-total').textContent = total.toFixed(2);
 
-//         // Actualizar el valor en el formulario oculto para enviar la cantidad correcta
-//         const productoId = cartItemDiv.querySelector("input[name='producto_id']").value;
-//         fetch("{% url 'ventas:actualizar_o_eliminar_producto' %}", {
-//             method: "POST",
-//             headers:{
-//                 "Content-Type": "aplicaction/x-www-form-urlencoded",
-//                 "X-CSRFToken": "{{ csrf_token }}"
-//             },
-//             body: new URLSearchParams({
-//                 "producto_id": productoId,
-//                 "cantidad": newQuantity,
-//                 "accion": "actualizar"
-//             })
-//         })
-//         .then(response => response.json())
-//         .then(data=>{
-//             if(data.success){
-//                 document.getElementById("cart-total-value").textContent = data.total_carrito;
-//             }
-//         })
+    // Mostramos el total en el modal de comprobante
+    document.getElementById('total-pedido').textContent = `${total.toFixed(2)}`;
+}
 
-
-
-//         const hiddenInput = document.createElement("input");
-//         hiddenInput.type = "hidden";
-//         hiddenInput.name = "cantidad";
-//         hiddenInput.value = newQuantity;
-//         cartItemDiv.querySelector("form[action*='actualizar_o_eliminar_producto']").appendChild(hiddenInput);
-
-//         // Opción: Enviar automáticamente la cantidad actualizada al backend (opcional)
-//         sendUpdatedQuantity(cartItemDiv, newQuantity);
-//     }
-// }
+// Llamamos a la función cuando se carga la página
+document.addEventListener('DOMContentLoaded', mostrarTotalCarrito);

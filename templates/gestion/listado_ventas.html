@@ -46,7 +46,7 @@ Proveedores - Panaderia El Maná
                     <tr>
                         <td>{{ venta.fecha }}</td>
                         <td>{{ venta.vendedor.nombre }} {{ venta.vendedor.apellido }}</td>
-                        <td>{{ venta.comprobante.total_comprobante }}</td>
+                        <td>${{ venta.comprobante.total_comprobante }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -58,7 +58,7 @@ Insumos - Panaderia El Maná
                     <strong>Insumo:</strong> {{ item.insumo.nombre }}
                     <strong>Precio Unitario:</strong> {{ item.precio_unitario }}
                     <strong>Cantidad Recibida:</strong> {{ item.cantidad_recibida }}
-                    <strong>Subtotal:</strong> {{ item.precio_total }}   
+                    <strong>Subtotal: $</strong> {{ item.precio_total }}   
                 </div>                                  
                 {% endfor %}
                 {% endif %}
@@ -66,7 +66,7 @@ Insumos - Panaderia El Maná
             </div>
 
             <div class="info-row">
-                <strong>Precio Total del pedido: {{ recepcion.total_pedido }} </strong>
+                <strong>Precio Total del pedido: ${{ recepcion.total_pedido }} </strong>
             </div>                        
         </div>
     </section>

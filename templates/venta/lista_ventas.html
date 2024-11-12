@@ -31,7 +31,7 @@ Historial Venta - Panaderia El Maná
             <tr>
                 <td>{{ venta.comprobante.id }} </td>
                 <td>{{ venta.comprobante.fecha_de_venta }} </td>
-                <td>{{ venta.comprobante.total_comprobante }} </td>
+                <td>${{ venta.comprobante.total_comprobante }} </td>
                 <td>{{ venta.vendedor.nombre }} {{ venta.vendedor.apellido }} </td>
                 <td>
                     <a href="{% url 'ventas:ver_detalles_venta' venta.id %}">

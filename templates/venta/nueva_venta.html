@@ -67,7 +67,7 @@ Nueva Venta - Panaderia El Maná
                     <div class="product-info">
                         <h4 class="product-name">{{ producto.nombre }}</h4>
                         <p class="product-descripcion">{{ producto.descripcion }}</p>
-                        <h3 class="product-price">Precio: {{ producto.precio }} {{ producto.medida }}</h3>
+                        <h3 class="product-price">Precio: ${{ producto.precio }} {{ producto.unidad_medida }}</h3>
                         <h3 class="product-price">Stock: {{ producto.stock }}</h3>
                         <!-- <button class="add-to-cart" data-id="{{ producto.id }}" onclick="agregarAlCarrito('{{ producto.id }}')">Agregar</button> -->
                         <form method="post" action="{% url 'ventas:agregar_producto_carrito' %}">
@@ -117,7 +117,7 @@ Nueva Venta - Panaderia El Maná
         </div>
         {% endfor %}
     </div>
-    <div id="cart-total">Total: $ <span id="cart-total-value"> {{ total_carrito }} </span> </div>
+    <div id="cart-total-text">Total: $ <span id="cart-total"></span> </div>
     <button id="payment-button" onclick="abrirComprobanteModal()"> Generar Comprobante</button>
 </div>
 
@@ -160,7 +160,7 @@ Nueva Venta - Panaderia El Maná
                 </div>
                 {% endfor %}
             </div>
-            <div id="total-pedido"></div>
+            <div id="comprobante-total">Total: $ <span id="total-pedido"></span> </div>
 
             <button type="submit">Guardar</button>
             <button type="button" id="cancel-payment">Cancelar</button>

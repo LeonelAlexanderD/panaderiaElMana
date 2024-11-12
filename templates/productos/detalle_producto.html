@@ -35,33 +35,39 @@ Proveedores Detalle - Panaderia El Maná
                 <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
                     style="max-width: 200px; max-height: 200px;">
             </div>
+
             <div class="info-row">
                 <h3 class="info-label">Nombre:</h3>
                 <h3 class="info-value">{{ producto.nombre }}</h3>
             </div>
+
             <div class="info-row">
-                <h4 class="info-label">Precio:</h4>
+                <h4 class="info-label">Precio: $</h4>
                 <h4 class="info-value">{{ producto.precio }}</h4>
             </div>
+
             <div class="info-row">
                 <h4 class="info-label">Unidad de Medida:</h4>
                 <h4 class="info-value">{{ producto.unidad_medida }}</h4>
             </div>
-            <div class="info-row">
-                <h3 class="info-label">Descripcion:</h3>
-                <h3 class="info-value">{{ producto.descripcion }}</h3>
-            </div>
+            
             <div class="info-row">
                 <h4 class="info-label">Stock:</h4>
                 <h4 class="info-value">{{ producto.stock }}</h4>
             </div>
+
+            <div class="info-row">
+                <h3 class="info-label">Descripcion:</h3>
+                <h3 class="info-value">{{ producto.descripcion }}</h3>
+            </div>
+
             <div class="info-row">
                 <h4 class="info-label">Categoria:</h4>
                 <h4 class="info-value">{{ producto.categoria }}</h4>
             </div>
             <div class="info-row">
                 <h4 class="info-label">Tipo:</h4>
-                <h4 class="info-value">{{ producto.tipo }}</h4>
+                <h4 class="info-value">{{ producto.subcategoria }}</h4>
             </div>
             <div class="botones-box">
                 <div class="botones-box">
@@ -96,28 +102,27 @@ Proveedores Detalle - Panaderia El Maná
             <label for="nombre">Nombre: {{ producto.nombre }} </label>
             <input type="text" name="nombre" id="nombre" maxlength="30" value="" required>
 
-            <label for="precio">Precio: {{ producto.precio }} </label>
+            <label for="precio">Precio: ${{ producto.precio }} </label>
             <input type="number" name="precio" id="precio"
                 value="{{ form.precio.value|default_if_none:producto.precio }}" required>
 
             <label for="unidad_medida">Unidad de Medida: {{ producto.unidad_medida }} </label>
             <select name="unidad_medida" id="unidad_medida" value="" required>
                 <option value="">----</option>
-
             </select>
+            
+            <label for="stock">Stock: {{ producto.stock }} </label>
+            <input type="number" name="stock" id="stock" value="" required>
 
             <label for="descripcion">Descripcion: {{ producto.descripcion }} </label>
             <textarea name="descripcion" id="descripcion"></textarea>
-
-            <label for="stock">Stock: {{ producto.stock }} </label>
-            <input type="number" name="stock" id="stock" value="" required>
 
             <label for="categoria">Categoria: {{ producto.categoria }} </label>
             <select name="categoria" id="categoria_select" required>
                 <option value="">----</option>
             </select>
 
-            <label for="tipo">Tipo: {{ producto.tipo }} </label>
+            <label for="tipo">Subcategoria: {{ producto.subcategoria }} </label>
             <input type="text" name="subcategoria" id="subcategoria" maxlength="30" value="" required>
             <button type="submit">Guardar</button>
         </form>
@@ -157,8 +162,8 @@ Proveedores Detalle - Panaderia El Maná
         <h2>Cambiar precio de venta de {{ producto.nombre }}</h2>
         <form method="post" action="{% url 'productos:cambiar_precio' producto.id %}">
             {% csrf_token %}
-            <p>Precio Actual: {{ producto.precio }}</p>
-            <label for="precio_nuevo">Nuevo precio:</label>
+            <p>Precio Actual: ${{ producto.precio }}</p>
+            <label for="precio_nuevo">Nuevo precio: $</label>
             <input type="number" name="precio_nuevo" id="precio_nuevo" required min="1">
             <button type="submit">Aceptar</button>
         </form>

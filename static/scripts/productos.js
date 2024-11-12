@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const jsonTextCategoria = document.getElementById('categorias_choices').textContent;
     const categoriasChoices = JSON.parse(jsonTextCategoria);
-    const selectCategoria = document.getElementById('categoria');
+    const selectCategoria = document.getElementById('categoria_select');
     selectCategoria.innerHTML = '';
 
     for (let key in categoriasChoices) {
